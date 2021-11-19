@@ -13,6 +13,7 @@ Software requirements are listed below by type of connection to the drone.
 Visual Studio or Anaconda
 
 git clone https://github.com/amymcgovern/pyparrot
+
 cd pyparrot
 
 pip install pyparrot
