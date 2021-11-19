@@ -19,7 +19,7 @@ cd pyparrot
 pip install pyparrot
 
 pip install untangle
-pip install pyparrot
+
 pip install zeroconf
 
 
