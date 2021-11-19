@@ -6,7 +6,7 @@ Manh Cuong Phi,
 Tri Pham,
 Binh Tran,
 Jordan Lanzoni,
-Brendan Higgins,
+Brendan Higgins
 
 Software requirements are listed below by type of connection to the drone.
 
