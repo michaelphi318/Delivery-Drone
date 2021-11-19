@@ -10,7 +10,9 @@ Brendan Higgins
 
 Software requirements are listed below by type of connection to the drone.
 
+
 Visual Studio or Anaconda
+
 
 git clone https://github.com/amymcgovern/pyparrot
 
@@ -23,7 +25,9 @@ pip install untangle
 pip install zeroconf
 
 
+
 Reference Links:
+
 
 https://pyparrot.readthedocs.io/en/latest/
 
