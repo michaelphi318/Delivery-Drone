@@ -2,11 +2,11 @@
 
 This is autonomous medical delivery drone prject from team 8 - Senior Design Drexel 2022 by
 
-Manh Cuong Phi
-Tri Pham
-Binh Tran
-Jordan Lanzoni
-Brendan Higgins
+Manh Cuong Phi,
+Tri Pham,
+Binh Tran,
+Jordan Lanzoni,
+Brendan Higgins,
 
 Software requirements are listed below by type of connection to the drone.
 
