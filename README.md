@@ -22,7 +22,7 @@ pip install pyparrot
 
 pip install untangle
 
-pip install zeroconf
+pip install zeroconf==0.21.0
 
 
 
