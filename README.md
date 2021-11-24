@@ -28,9 +28,14 @@ pip install zeroconf==0.21.0
 
 Reference Links:
 
+Repo
 
 https://pyparrot.readthedocs.io/en/latest/
 
 https://github.com/N-Bz/bybop
 
 https://github.com/amymcgovern/pyparrot
+
+GPS
+
+https://github.com/amymcgovern/pyparrot/issues/59
