@@ -11,7 +11,10 @@ Brendan Higgins
 Software requirements are listed below by type of connection to the drone.
 
 Python 3.6 or later
+
 Visual Studio or Anaconda
+
+Latest pip
 
 curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
 
