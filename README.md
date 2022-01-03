@@ -10,7 +10,7 @@ Brendan Higgins
 
 Software requirements are listed below by type of connection to the drone.
 
-Python 3.6 or later
+Python 3.6 - 3.8
 
 Visual Studio or Anaconda
 
@@ -24,13 +24,21 @@ git clone https://github.com/amymcgovern/pyparrot
 
 cd pyparrot
 
+Drone Dependencies
+
 pip install pyparrot
 
 pip install untangle
 
 pip install zeroconf==0.21.0
 
+BLUETOOTH Dependencies
 
+pip install wheel
+
+pip install adafruit-blinka-bleio
+
+pip install adafruit-circuitpython-ble
 
 Reference Links:
 
