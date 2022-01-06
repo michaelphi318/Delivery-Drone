@@ -57,3 +57,5 @@ https://github.com/amymcgovern/pyparrot
 GPS
 
 https://github.com/amymcgovern/pyparrot/issues/59
+
+https://www.diva-portal.org/smash/get/diva2:290418/FULLTEXT01.pdf
