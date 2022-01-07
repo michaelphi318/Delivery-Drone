@@ -1,0 +1,74 @@
+# cpb_ble_sensor.py
+
+# Provide a remote sensing service over Bluetooth Low-Energy (BLE).
+# This runs on an Adafruit Circuit Playground Bluefruit.
+
+# This example works with either:
+#  1. host_ble_receiver.py running on a host computer
+#  2. the Plotter function of the Bluefruit Connect iOS app
+
+# ----------------------------------------------------------------
+# Import the standard Python time functions.
+import time
+
+# Import the board-specific input/output library.
+from adafruit_circuitplayground import cp
+
+# Import the Adafruit Bluetooth library.  Technical reference:
+# https://circuitpython.readthedocs.io/projects/ble/en/latest/api.html
+from adafruit_ble import BLERadio
+from adafruit_ble.advertising.standard import ProvideServicesAdvertisement
+from adafruit_ble.services.nordic import UARTService
+
+# ----------------------------------------------------------------
+# Initialize global variables for the main loop.
+
+ble = BLERadio()
+uart = UARTService()
+advertisement = ProvideServicesAdvertisement(uart)
+
+# Flags for detecting state changes.
+advertised = False
+connected  = False
+
+# The sensor sampling rate is precisely regulated using the following timer variables.
+sampling_timer    = 0.0
+last_time         = time.monotonic()
+sampling_interval = 0.10
+
+# ----------------------------------------------------------------
+# Begin the main processing loop.
+
+while True:
+
+    # Read the accelerometer at regular intervals.  Measure elapsed time and
+    # wait until the update timer has elapsed.
+    now = time.monotonic()
+    interval = now - last_time
+    last_time = now
+    sampling_timer -= interval
+    if sampling_timer < 0.0:
+        sampling_timer += sampling_interval
+        x, y, z = cp.acceleration
+    else:
+        x = None
+
+    if not advertised:
+        ble.start_advertising(advertisement)
+        print("Waiting for connection.")
+        advertised = True
+
+    if not connected and ble.connected:
+        print("Connection received.")
+        connected = True
+        cp.red_led = True
+        
+    if connected:
+        if not ble.connected:
+            print("Connection lost.")
+            connected = False
+            advertised = False
+            cp.red_led = False            
+        else:
+            if x is not None:
+                uart.write(b"%.3f,%.3f,%.3f\n" % (x, y, z))
