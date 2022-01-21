@@ -4,7 +4,6 @@ from pyparrot.Bebop import Bebop
 
 #function that gets called when ctrl+C interrupt occurs
 def handler(signum, frame):
-    bebop.smart_sleep(5)
     bebop.safe_land(10)
 
     print("DONE - disconnecting")
