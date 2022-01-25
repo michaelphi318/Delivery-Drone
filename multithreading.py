@@ -2,11 +2,25 @@ from pyparrot.Bebop import Bebop
 import _thread
 import threading
 from queue import Queue
+from pynput.keyboard import Key, Controller
+import time
 import sys
 from adafruit_ble import BLERadio
 from adafruit_ble.advertising.standard import ProvideServicesAdvertisement
 from adafruit_ble.services.nordic import UARTService
 
+
+def t1example(bebop, stop):
+    bebop.safe_takeoff(10)
+    bebop.smart_sleep(5)
+
+def t2example(bebop, stop):
+    while True:
+        val = input()
+        if val == "q":
+            bebop.smart_sleep(1)
+            bebop.safe_land(5)
+            break
 
 def gpsTesting(bebop, queue, stop):
     for i in range(0,61):
@@ -68,25 +82,26 @@ def bleLaptop(uart_connection, queue, stop):
 
 
 if __name__ == "__main__":
-    ble = BLERadio()
-    uart_connection = None
+    #ble = BLERadio()
+    #uart_connection = None
     bebop = Bebop()
     success = bebop.connect(5)
+    #success = True
     stop = False
-    q = Queue()     #shared data from threads
+    keyboard = Controller()
+    #q = Queue()     #shared data from threads
 
     if (success):
         bebop.smart_sleep(5)
         bebop.ask_for_state_update()
             
-        t1 = threading.Thread(target=gpsTesting, args=(bebop,q,stop,))
-        t2 = threading.Thread(target=bleLaptop, args=(uart_connection,q,stop,)) 
+        #t1 = threading.Thread(target=gpsTesting, args=(bebop,q,stop,))
+        t1 = threading.Thread(target=t1example, args=(bebop,stop,))
+        #t2 = threading.Thread(target=bleLaptop, args=(uart_connection,q,stop,))
+        t2 = threading.Thread(target=t2example, args=(bebop,stop,)) 
             
         t1.start()
         t2.start()
-
-        while stop == False:
-            continue
 
         t1.join()
         t2.join()
