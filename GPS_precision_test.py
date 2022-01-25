@@ -7,12 +7,12 @@ print(success)
 
 print("sleeping")
 bebop.smart_sleep(5)
-Lat_min = 200
-Lat_max = 0
-Lon_min = 200
-Lon_max = 0
-Alt_min = 200
-Alt_max = 0
+Lat_min = -2000
+Lat_max = 2000
+Lon_min = -2000
+Lon_max = 2000
+Alt_min = -2000
+Alt_max = 2000
 
 #Takes 60 samples of gps location and saves the maximum and minimum values recorded
 for i in range(0,60):
@@ -35,7 +35,7 @@ for i in range(0,60):
         Alt_min = Alt
     if(Alt_max < Alt):
         Alt_max = Alt
-    bebop.smart_sleep(1)
+    bebop.smart_sleep(0.5)
 
 #Calculates the range of the gps location in each direction measured in feet
 Lat_precision = (Lat_max - Lat_min) * 364000
