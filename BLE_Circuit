@@ -1,11 +1,13 @@
-# cpb_ble_sensor.py
+import time
+import board
 
-# Provide a remote sensing service over Bluetooth Low-Energy (BLE).
-# This runs on an Adafruit Circuit Playground Bluefruit.
+import adafruit_hcsr04
 
-# This example works with either:
-#  1. host_ble_receiver.py running on a host computer
-#  2. the Plotter function of the Bluefruit Connect iOS app
+from analogio import AnalogIn
+
+#trigger = AnalogIn(board.A6).value
+#echo = AnalogIn(board.A4).value
+#sonar = adafruit_hcsr04.HCSR04(trigger_pin=board.D1, echo_pin=board.D2)
 
 # ----------------------------------------------------------------
 # Import the standard Python time functions.
@@ -62,13 +64,14 @@ while True:
         print("Connection received.")
         connected = True
         cp.red_led = True
-        
+
     if connected:
         if not ble.connected:
             print("Connection lost.")
             connected = False
             advertised = False
-            cp.red_led = False            
+            cp.red_led = False
         else:
             if x is not None:
                 uart.write(b"%.3f,%.3f,%.3f\n" % (x, y, z))
+                #uart.write(b"%d\n" % (sonar.distance))
