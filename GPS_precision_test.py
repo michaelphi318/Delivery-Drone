@@ -13,6 +13,9 @@ Lon_min = -2000
 Lon_max = 2000
 Alt_min = -2000
 Alt_max = 2000
+Alt_sum = 0
+Lon_sum = 0
+Lat_sum = 0
 
 #Takes 60 samples of gps location and saves the maximum and minimum values recorded
 for i in range(0,60):
@@ -23,6 +26,9 @@ for i in range(0,60):
     print("Longitude: " + str(Lon))
     Alt = bebop.sensors.sensors_dict["GpsLocationChanged_altitude"]
     print("Altitude:  " + str(Alt) + "\n")
+    Alt_sum += Alt
+    Lon_sum += Lon
+    Lat_sum += Lat
     if(Lat_min > Lat):
         Lat_min = Lat
     if(Lat_max < Lat):
@@ -44,6 +50,13 @@ Alt_precision = (Alt_max - Alt_min) * 3.28084
 print("Latitude Precision: " + str(Lat_precision) + " feet")
 print("Longitdue Precision: " + str(Lon_precision) + " feet")
 print("Altitude Precision: " + str(Alt_precision) + " feet")
+
+Lat_avg = Lat_sum/60
+Lon_avg = Lon_sum/60
+Alt_avg = Alt_sum/60
+print("Latitude Average: " + str(Lat_avg) + " feet")
+print("Longitdue Average: " + str(Lon_avg) + " feet")
+print("Altitude Average: " + str(Alt_avg) + " feet")
 
 print("DONE - disconnecting")
 bebop.disconnect()
