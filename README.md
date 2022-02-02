@@ -10,7 +10,7 @@ Brendan Higgins
 
 Software requirements are listed below by type of connection to the drone.
 
-Python 3.6 - 3.8
+Python 3.8.10
 
 Visual Studio or Anaconda
 
