@@ -14,7 +14,7 @@ Python 3.6 - 3.8
 
 Visual Studio or Anaconda
 
-Latest pip
+Latest PIP
 
 curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
 
