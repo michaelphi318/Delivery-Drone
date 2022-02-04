@@ -86,7 +86,7 @@ def avgGPS(bebop):
         lat_sum += lat
         lon_sum += lon
         alt_sum += alt 
-        #bebop.smart_sleep(0.5)
+        bebop.smart_sleep(0.1)
     
     lat_avg = lat_sum / 10
     lon_avg = lon_sum / 10
