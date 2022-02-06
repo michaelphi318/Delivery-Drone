@@ -7,7 +7,7 @@ import sys
 
 
 LATITUDE_DESTINATION = 39.96166130276774
-LONGTITUDE_DESTINATION = -75.18769108889548
+LONGITUDE_DESTINATION = -75.18769108889548
 #LATITUDE_ORIGIN = 0
 #LONGTITUDE_ORIGIN = 0
 
@@ -115,24 +115,34 @@ if __name__ == "__main__":
     bebop.move_relative(0, 0, -1, 0)
     print("Sleeping")
     bebop.smart_sleep(2)
-
-    loc_raidans = atan(LATITUDE_DESTINATION / LONGTITUDE_DESTINATION)
     
-    lat = bebop.sensors.sensors_dict["GpsLocationChanged_latitude"]
-    lon = bebop.sensors.sensors_dict["GpsLocationChanged_longitude"]
-    d = distanceGPS(lat, lon, LATITUDE_DESTINATION, LONGTITUDE_DESTINATION)
+    lat, lon = avgGPS(bebop)
+    loc_radians = atan((LATITUDE_DESTINATION - lat) / (LONGITUDE_DESTINATION - lon))
+    if((LONGITUDE_DESTINATION - lon) < 0):
+        loc_radians += pi
+    
+    prevLat = lat
+    prevLon = lon
+    bebop.move_relative(1, 0, 0, 0)
 
-    for i in np.arange(0, d, 1.0):
+    while(d > 1):
         lat, lon = avgGPS(bebop)
-        dlat = lat - LATITUDE_DESTINATION
-        dlon = lon - LONGTITUDE_DESTINATION
+        loc_radians = atan((LATITUDE_DESTINATION - lat) / (LONGITUDE_DESTINATION - lon))
+        if((LONGITUDE_DESTINATION - lon) < 0):
+            loc_radians += pi
+        d = distanceGPS(lat, lon, LATITUDE_DESTINATION, LONGITUDE_DESTINATION)
+        dlat = lat - prevLat
+        dlon = lon - prevLon
         current_radians = atan(dlat / dlon)
-        
         if (dlon < 0):
             current_radians += pi 
         
-        diff_radians = loc_raidans - current_radians
+        diff_radians = loc_radians - current_radians
         bebop.move_relative(1, 0, 0, -diff_radians)
+        prevLat = lat
+        prevLon = lon
+        
+        
     
     bebop.safe_land(5)
     print("DONE - Disconnecting")
