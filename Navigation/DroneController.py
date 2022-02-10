@@ -2,12 +2,9 @@ from pyparrot.Bebop import Bebop
 from threading import Thread
 from math import radians, cos, sin, asin, atan, sqrt, pi
 import sys
-import signal
 from adafruit_ble import BLERadio
 from adafruit_ble.advertising.standard import ProvideServicesAdvertisement
 from adafruit_ble.services.nordic import UARTService
-from DroneController import *
-
 
 LATITUDE_DESTINATION = 39.96147750832829
 LONGITUDE_DESTINATION = -75.187658591667
@@ -206,19 +203,4 @@ class DroneController:
 
 #     print(result)
 
-if __name__ == "__main__":
-    def emergencyExit(signum, frame):
-        bebop.safe_land(10)
-        print("Safe land - Disconnecting")
-        bebop.disconnect()
-        sys.exit(1)
-
-    signal.signal(signal.SIGINT, emergencyExit)
-
-    bebop = Bebop()
-    controller = DroneController(bebop)
-    
-    controller.begin(2)
-    controller.run()
-
-    sys.exit(0)
+# test()
