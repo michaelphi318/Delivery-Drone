@@ -1,3 +1,4 @@
+from multiprocessing.sharedctypes import Value
 from pyparrot.Bebop import Bebop
 import math
 import signal
@@ -21,13 +22,17 @@ print(success)
 print("sleeping")
 bebop.smart_sleep(5)
 
-bepop.set_max_vertical_speed(2.5)
 bebop.ask_for_state_update()
 
 bebop.safe_takeoff(5)
 
-cmd = 0
-
 while True:
-  cmd = int(input("Enter Velocity:"))
-  bebop.fly_direct(roll=0, pitch=cmd, yaw=0, vertical_movement=0, duration=1)
+    try:
+        p = int(input("Enter pitch: "))
+        v = float(input("Enter max_tilt: "))
+        t = float(input("Enter duration: "))
+        bebop.set_max_tilt(v)
+        bebop.fly_direct(roll=0, pitch=p, yaw=0, vertical_movement=0, duration=t)
+        # bebop.move_relative(0,0,0,3.18)
+    except ValueError:
+        print("Input invalid")

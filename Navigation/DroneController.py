@@ -1,3 +1,4 @@
+from tabnanny import verbose
 from pyparrot.Bebop import Bebop
 from threading import Thread
 from math import radians, cos, sin, asin, atan, sqrt, pi
@@ -168,12 +169,18 @@ class DroneController:
 
             lat, lon = self.avgGPS(10)
             d = self.distance(lat, lon, LATITUDE_DESTINATION, LONGITUDE_DESTINATION)
-            v = 2
+            p = 100
 
             while d > 0.5:
+                if d > 3:
+                    p = 100
+                elif d <= 3 and d > 1:
+                    p = 50
+                else:
+                    p = 25
                 diff_radians, preLat, preLon = self.diffRadians(3, lat, lon, preLat, preLon)
                 self.move_relative(0, 0, 0, diff_radians)
-                self.move_relative(v, 0, 0, 0)
+                self.drone.fly_direct(roll=0, pitch=p, yaw=0, vertical_movement=0, duration=0.2)
                 preLat = lat
                 preLon = lon
                 lat, lon = self.avgGPS(3)

@@ -4,8 +4,8 @@ from time import perf_counter
 import sys
 
 
-def avgGPS(n, result, index):
-    def handler():
+def avgGPS(n, result):
+    def handler(index):
         lat = bebop.sensors.sensors_dict["GpsLocationChanged_latitude"]
         lon = bebop.sensors.sensors_dict["GpsLocationChanged_longitude"]
         alt = bebop.sensors.sensors_dict["GpsLocationChanged_altitude"]
