@@ -169,6 +169,7 @@ if __name__ == "__main__":
     bebop.smart_sleep(1)
     # bebop.move_relative(2, 0, 0, 0)
     
+    lat, lon = avgGPS(bebop, 10)
     d = distanceGPS(lat, lon, LATITUDE_DESTINATION, LONGITUDE_DESTINATION)
     print("Distance to destination: " + str(d) + " m\n")
     
@@ -199,7 +200,6 @@ if __name__ == "__main__":
             p = 10
             v = 0.5
         
-        lat, lon = avgGPS(bebop, 3)
         diff_radians = diffRadians(lat, lon, prevLat, prevLon)
 
         # loc_radians = atan((LATITUDE_DESTINATION - lat) / (LONGITUDE_DESTINATION - lon))
