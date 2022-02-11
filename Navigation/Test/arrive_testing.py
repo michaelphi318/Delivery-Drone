@@ -4,8 +4,8 @@ import signal
 import sys
 
 
-LATITUDE_DESTINATION = 39.9609891500046
-LONGITUDE_DESTINATION = -75.18765755833356
+LATITUDE_DESTINATION = 39.960949649116785
+LONGITUDE_DESTINATION = -75.18757379939173
 #LATITUDE_ORIGIN = 0
 #LONGTITUDE_ORIGIN = 0
 
@@ -132,7 +132,7 @@ if __name__ == "__main__":
     bebop = Bebop()
     
     print("Connecting to the drone\n")
-    success = bebop.connect(2)
+    success = bebop.connect(10)
     print(success)
 
     if not success:
@@ -147,7 +147,7 @@ if __name__ == "__main__":
     bebop.set_max_vertical_speed(2.5)
     
     print("Take off\n")
-    bebop.safe_takeoff(1)
+    bebop.safe_takeoff(10)
 
     bebop.fly_direct(roll=0, pitch=0, yaw=0, vertical_movement=100, duration=0.5)
     # bebop.move_relative(0, 0, -1, 0)
@@ -186,18 +186,18 @@ if __name__ == "__main__":
     p = 100
     v = 2
 
-    while(d > 0.5):
+    while(d > 0.25):
         if d > 3:
             p = 75
             v = 2
         elif d <= 3 and d > 1:
-            p = 50
+            p = 25
             v = 1
         elif d < 1 and d > 0.5:
-            p = 25
+            p = 10
             v = 0.5
         else:
-            p = 10
+            p = 5
             v = 0.5
         
         diff_radians = diffRadians(lat, lon, prevLat, prevLon)
@@ -216,13 +216,13 @@ if __name__ == "__main__":
         
         # diff_radians = loc_radians - current_radians
 
-        print("Rotating\n")
         if abs(diff_radians) > 5 * pi / 180:
-            # print("break1")
+            print("Rotating\n")
+            bebop.smart_sleep(1)
             bebop.move_relative(0, 0, 0, -diff_radians)
         
         print("Going forward\n")
-        bebop.fly_direct(roll=0, pitch=p, yaw=0, vertical_movement=0, duration=0.25)
+        bebop.fly_direct(roll=0, pitch=p, yaw=0, vertical_movement=0, duration=0.5)
         # bebop.move_relative(v, 0, 0, 0)
         bebop.smart_sleep(0.5)
         

@@ -1,15 +1,29 @@
 from pyparrot.Bebop import Bebop
+import sys
+import signal
+
+def handler(signum, frame):
+    bebop.safe_land(10)
+    print("Emergency landing protocol - disconnecting")
+    bebop.disconnect()
+    sys.exit(1)
+
+signal.signal(signal.SIGINT, handler)
 
 bebop = Bebop()
 print("connecting")
-success = bebop.connect(2)
+success = bebop.connect(10)
+bebop.smart_sleep(1)
 print(success)
 
 print("Take off\n")
-bebop.safe_takeoff(1)
+bebop.safe_takeoff(10)
 
-bebop.fly_direct(roll=0, pitch=0, yaw=0, vertical_movement=100, duration=0.5)
-# bebop.move_relative(0, 0, -1, 0)
+# print("Sleeping")
+bebop.smart_sleep(1)
+
+#bebop.fly_direct(roll=0, pitch=0, yaw=0, vertical_movement=100, duration=0.75)
+bebop.move_relative(0, 0, -2, 0)
     
 # print("Sleeping")
 bebop.smart_sleep(1)
