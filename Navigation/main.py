@@ -14,8 +14,7 @@ if __name__ == "__main__":
 
     bebop = Bebop()
     controller = DroneController(bebop)
-    
-    controller.begin(2)
+    controller.start(2)
     controller.run()
 
     sys.exit(0)

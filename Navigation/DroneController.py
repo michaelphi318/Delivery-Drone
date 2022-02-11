@@ -33,16 +33,16 @@ class DroneController:
 
     def take_off(self, time):
         print("Take off")
-        self.drone.take_off(time)
+        self.drone.safe_takeoff(time)
         self.drone.move_relative(0, 0, -1, 0)
         self.smart_sleep(time)
 
-    def begin(self, time):
+    def start(self, time):
         success = self.connect(time)
     
-        if not success:
-            print("Failed")
-            sys.exit(1)
+        # if not success:
+        #     print("Failed")
+        #     sys.exit(1)
 
         self.smart_sleep(time)
         self.take_off(time)
@@ -148,7 +148,9 @@ class DroneController:
         return lat_avg, lon_avg
     
     def run(self):
+        print("break1")
         while self.running:
+            print("break2")
             if not self.connect(5):
                 sys.exit(1)
             

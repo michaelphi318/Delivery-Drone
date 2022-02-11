@@ -1,7 +1,5 @@
 from pyparrot.Bebop import Bebop
 from math import radians, cos, sin, asin, atan, sqrt, pi
-# pip install numpy
-import numpy as np
 import signal
 import sys
 
@@ -13,7 +11,7 @@ LONGITUDE_DESTINATION = -75.18765755833356
 
 def handler(signum, frame):
     bebop.safe_land(10)
-    print("Safe land protocol - disconnecting")
+    print("Emergency landing protocol - disconnecting")
     bebop.disconnect()
     sys.exit(1)
 
@@ -37,7 +35,6 @@ def distanceGPS(lat1, lon1, lat2, lon2):
     r = 6371 * 10
       
     # calculate the result
-    print(str(c * r) + "\n")
     return (c * r)
 
 def precisionGPS(bebop):
@@ -92,8 +89,7 @@ def avgGPS(bebop, n):
     lat_avg = lat_sum / n
     lon_avg = lon_sum / n
     alt_avg = alt_sum / n
-    print("Latitude: " + str(lat_avg))
-    print("Longitude: " + str(lon_avg) + "\n")
+
     return lat_avg, lon_avg
 
 
@@ -103,22 +99,28 @@ if __name__ == "__main__":
     bebop = Bebop()
     
     
-    print("Connecting")
-    success = bebop.connect(10)
+    print("Connecting\n")
+    success = bebop.connect(5)
     print(success)
 
     if not success:
-        print("FAILED")
+        print("Connection failed\n")
         sys.exit(1)
-    bebop.set_max_vertical_speed(1)
-    print("Sleeping")
-    bebop.smart_sleep(2)
     
-    print("Take off")
-    bebop.safe_takeoff(5)
-    bebop.move_relative(0, 0, -1, 0)
-    print("Sleeping")
-    bebop.smart_sleep(2)
+    # print("Sleeping")
+    bebop.smart_sleep(1)
+    
+    print("Take off\n")
+    bebop.safe_takeoff(1)
+
+    bebop.set_max_tilt(30)
+    bebop.set_max_vertical_speed(2.5)
+
+    bebop.fly_direct(roll=0, pitch=0, yaw=0, vertical_movement=100, duration=0.5)
+    # bebop.move_relative(0, 0, -1, 0)
+    
+    # print("Sleeping")
+    bebop.smart_sleep(1)
     
     lat, lon = avgGPS(bebop, 10)
     loc_radians = atan((LATITUDE_DESTINATION - lat) / (LONGITUDE_DESTINATION - lon))
@@ -128,9 +130,14 @@ if __name__ == "__main__":
     
     prevLat = lat
     prevLon = lon
-    bebop.move_relative(2, 0, 0, 0)
+    
+    print("Going foward\n")
+    bebop.fly_direct(roll=0, pitch=75, yaw=0, vertical_movement=0, duration=0.25)
+    bebop.smart_sleep(1)
+    # bebop.move_relative(2, 0, 0, 0)
     
     d = distanceGPS(lat, lon, LATITUDE_DESTINATION, LONGITUDE_DESTINATION)
+    print("Distance to destination: " + str(d) + " m\n")
     
     lat, lon = avgGPS(bebop, 10)
     loc_radians = atan((LATITUDE_DESTINATION - lat) / (LONGITUDE_DESTINATION - lon))
@@ -146,7 +153,6 @@ if __name__ == "__main__":
     bebop.set_max_tilt(30)
 
     while(d > 0.5):
-        print("break1")
         lat, lon = avgGPS(bebop, 3)
         loc_radians = atan((LATITUDE_DESTINATION - lat) / (LONGITUDE_DESTINATION - lon))
         if((LONGITUDE_DESTINATION - lon) < 0):
@@ -154,13 +160,16 @@ if __name__ == "__main__":
         
         print(d)
         if d > 3:
-            p = 100
+            p = 75
             v = 2
         elif d <= 3 and d > 1:
             p = 50
             v = 1
+        elif d < 1 and d > 0.5:
+            p = 25
+            v = 0.5
         else:
-            p = 20
+            p = 10
             v = 0.5
         
         dlat = lat - prevLat
@@ -170,20 +179,19 @@ if __name__ == "__main__":
             current_radians += pi 
         
         diff_radians = loc_radians - current_radians
-        print("break2")
-        bebop.smart_sleep(1)
-        print("break3")
+        print("Rotating\n")
         bebop.move_relative(0, 0, 0, -diff_radians)
-        print("break4")
-        bebop.fly_direct(roll=0, pitch=p, yaw=0, vertical_movement=0, duration=0.5)
-        print("break5")
+        print("Going forward\n")
+        bebop.fly_direct(roll=0, pitch=p, yaw=0, vertical_movement=0, duration=0.25)
+        bebop.smart_sleep(0.5)
         # bebop.move_relative(v, 0, 0, 0)
         prevLat = lat
         prevLon = lon
         lat, lon = avgGPS(bebop, 3)
         d = distanceGPS(lat, lon, LATITUDE_DESTINATION, LONGITUDE_DESTINATION)
+        print("Distance to destination: " + str(d) + " m\n")
 
-        
+    print("\nPrepare for Landing\n")
     bebop.safe_land(5)
     print("DONE - Disconnecting")
     bebop.disconnect()

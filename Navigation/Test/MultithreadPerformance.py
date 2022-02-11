@@ -4,7 +4,7 @@ from time import perf_counter
 import sys
 
 
-def avgGPS(n, result):
+def avgGPS(result, n):
     def handler(index):
         lat = bebop.sensors.sensors_dict["GpsLocationChanged_latitude"]
         lon = bebop.sensors.sensors_dict["GpsLocationChanged_longitude"]
@@ -24,7 +24,7 @@ def avgGPS(n, result):
     threads = [None] * n
 
     for i in range(n):
-        threads[i] = Thread(target=handler, args=(result, i,))
+        threads[i] = Thread(target=handler, args=(i,))
 
     for thread in threads:
         thread.start()
@@ -81,6 +81,7 @@ if __name__ == "__main__":
     time = end - start
     
     for i in range(len(result)):
+        print("Iteration " + str(i))
         print("Latitude: " + str(result[i][0]))
         print("Longitude: " + str(result[i][1]))
         print("Altitude: " + str(result[i][2]) + "\n")
