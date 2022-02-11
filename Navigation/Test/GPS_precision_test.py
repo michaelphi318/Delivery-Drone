@@ -2,8 +2,17 @@ from pyparrot.Bebop import Bebop
 
 bebop = Bebop()
 print("connecting")
-success = bebop.connect(10)
+success = bebop.connect(2)
 print(success)
+
+print("Take off\n")
+bebop.safe_takeoff(1)
+
+bebop.fly_direct(roll=0, pitch=0, yaw=0, vertical_movement=100, duration=0.5)
+# bebop.move_relative(0, 0, -1, 0)
+    
+# print("Sleeping")
+bebop.smart_sleep(1)
 
 print("sleeping")
 bebop.smart_sleep(5)
@@ -59,4 +68,5 @@ print("Longitdue Average: " + str(Lon_avg) + " feet")
 print("Altitude Average: " + str(Alt_avg) + " feet")
 
 print("DONE - disconnecting")
+bebop.safe_land(2)
 bebop.disconnect()
