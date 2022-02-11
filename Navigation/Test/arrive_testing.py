@@ -94,19 +94,35 @@ def avgGPS(bebop, n):
     lat_sum = 0
     lon_sum = 0
     alt_sum = 0
+    lat_error = 0
+    lon_error = 0
+    alt_error = 0
 
     for i in range(n):
         lat = bebop.sensors.sensors_dict["GpsLocationChanged_latitude"]
         lon = bebop.sensors.sensors_dict["GpsLocationChanged_longitude"]
         alt = bebop.sensors.sensors_dict["GpsLocationChanged_altitude"]
-        lat_sum += lat
-        lon_sum += lon
-        alt_sum += alt 
+        
+        if lat != 500:
+            lat_sum += lat
+        else:
+            lat_error += 1
+        
+        if lon!= 500:
+            lon_sum += lon
+        else:
+            lon_error += 1
+
+        if alt != 500:
+            alt_sum += alt 
+        else:
+            lon_error += 1
+
         bebop.smart_sleep(0.1)
     
-    lat_avg = lat_sum / n
-    lon_avg = lon_sum / n
-    alt_avg = alt_sum / n
+    lat_avg = lat_sum / (n - lat_error)
+    lon_avg = lon_sum / (n - lon_error)
+    alt_avg = alt_sum / (n - alt_error)
 
     return lat_avg, lon_avg
 
@@ -185,6 +201,7 @@ if __name__ == "__main__":
         
         lat, lon = avgGPS(bebop, 3)
         diff_radians = diffRadians(lat, lon, prevLat, prevLon)
+
         # loc_radians = atan((LATITUDE_DESTINATION - lat) / (LONGITUDE_DESTINATION - lon))
         
         # if((LONGITUDE_DESTINATION - lon) < 0):
@@ -200,12 +217,14 @@ if __name__ == "__main__":
         # diff_radians = loc_radians - current_radians
 
         print("Rotating\n")
-        bebop.move_relative(0, 0, 0, -diff_radians)
+        if abs(diff_radians) > 5 * pi / 180:
+            # print("break1")
+            bebop.move_relative(0, 0, 0, -diff_radians)
         
         print("Going forward\n")
         bebop.fly_direct(roll=0, pitch=p, yaw=0, vertical_movement=0, duration=0.25)
-        bebop.smart_sleep(0.5)
         # bebop.move_relative(v, 0, 0, 0)
+        bebop.smart_sleep(0.5)
         
         prevLat = lat
         prevLon = lon
