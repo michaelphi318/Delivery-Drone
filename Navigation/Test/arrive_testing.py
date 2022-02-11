@@ -72,6 +72,24 @@ def precisionGPS(bebop):
 
         return lat_precision, lon_precision
 
+def diffRadians(lat, lon, preLat, preLon):
+    loc_radians = atan((LATITUDE_DESTINATION - lat) / (LONGITUDE_DESTINATION - lon))
+
+    if LONGITUDE_DESTINATION - lon < 0:
+        loc_radians += pi
+        
+    dlat = lat - preLat
+    dlon = lon - preLon
+    current_radians = atan(dlat / dlon)
+
+    if (dlon < 0):
+        current_radians += pi
+        
+    # diff_radians = current_radians - loc_radians
+    diff_radians = loc_radians - current_radians
+
+    return diff_radians
+
 def avgGPS(bebop, n):
     lat_sum = 0
     lon_sum = 0
@@ -92,15 +110,13 @@ def avgGPS(bebop, n):
 
     return lat_avg, lon_avg
 
-
 if __name__ == "__main__":
     signal.signal(signal.SIGINT, handler)
 
     bebop = Bebop()
     
-    
-    print("Connecting\n")
-    success = bebop.connect(5)
+    print("Connecting to the drone\n")
+    success = bebop.connect(2)
     print(success)
 
     if not success:
@@ -109,12 +125,13 @@ if __name__ == "__main__":
     
     # print("Sleeping")
     bebop.smart_sleep(1)
+
+    # set bebop current speed for fly_direct
+    bebop.set_max_tilt(30)
+    bebop.set_max_vertical_speed(2.5)
     
     print("Take off\n")
     bebop.safe_takeoff(1)
-
-    bebop.set_max_tilt(30)
-    bebop.set_max_vertical_speed(2.5)
 
     bebop.fly_direct(roll=0, pitch=0, yaw=0, vertical_movement=100, duration=0.5)
     # bebop.move_relative(0, 0, -1, 0)
@@ -139,26 +156,20 @@ if __name__ == "__main__":
     d = distanceGPS(lat, lon, LATITUDE_DESTINATION, LONGITUDE_DESTINATION)
     print("Distance to destination: " + str(d) + " m\n")
     
-    lat, lon = avgGPS(bebop, 10)
-    loc_radians = atan((LATITUDE_DESTINATION - lat) / (LONGITUDE_DESTINATION - lon))
-    if((LONGITUDE_DESTINATION - lon) < 0):
-        loc_radians += pi
+    # Repetitive part, check later when testing
+    # lat, lon = avgGPS(bebop, 10)
+    # loc_radians = atan((LATITUDE_DESTINATION - lat) / (LONGITUDE_DESTINATION - lon))
+    # if((LONGITUDE_DESTINATION - lon) < 0):
+    #     loc_radians += pi
 
-    dlat = lat - prevLat
-    dlon = lon - prevLon
-    current_radians = atan(dlat / dlon)
+    # dlat = lat - prevLat
+    # dlon = lon - prevLon
+    # current_radians = atan(dlat / dlon)
     
     p = 100
     v = 2
-    bebop.set_max_tilt(30)
 
     while(d > 0.5):
-        lat, lon = avgGPS(bebop, 3)
-        loc_radians = atan((LATITUDE_DESTINATION - lat) / (LONGITUDE_DESTINATION - lon))
-        if((LONGITUDE_DESTINATION - lon) < 0):
-            loc_radians += pi
-        
-        print(d)
         if d > 3:
             p = 75
             v = 2
@@ -172,19 +183,30 @@ if __name__ == "__main__":
             p = 10
             v = 0.5
         
-        dlat = lat - prevLat
-        dlon = lon - prevLon
-        current_radians = atan(dlat / dlon)
-        if (dlon < 0):
-            current_radians += pi 
+        lat, lon = avgGPS(bebop, 3)
+        diff_radians = diffRadians(lat, lon, prevLat, prevLon)
+        # loc_radians = atan((LATITUDE_DESTINATION - lat) / (LONGITUDE_DESTINATION - lon))
         
-        diff_radians = loc_radians - current_radians
+        # if((LONGITUDE_DESTINATION - lon) < 0):
+        #     loc_radians += pi
+        
+        # dlat = lat - prevLat
+        # dlon = lon - prevLon
+        # current_radians = atan(dlat / dlon)
+        
+        # if (dlon < 0):
+        #     current_radians += pi 
+        
+        # diff_radians = loc_radians - current_radians
+
         print("Rotating\n")
         bebop.move_relative(0, 0, 0, -diff_radians)
+        
         print("Going forward\n")
         bebop.fly_direct(roll=0, pitch=p, yaw=0, vertical_movement=0, duration=0.25)
         bebop.smart_sleep(0.5)
         # bebop.move_relative(v, 0, 0, 0)
+        
         prevLat = lat
         prevLon = lon
         lat, lon = avgGPS(bebop, 3)
@@ -192,7 +214,7 @@ if __name__ == "__main__":
         print("Distance to destination: " + str(d) + " m\n")
 
     print("\nPrepare for Landing\n")
-    bebop.safe_land(5)
+    bebop.safe_land(2)
     print("DONE - Disconnecting")
     bebop.disconnect()
     sys.exit(0)

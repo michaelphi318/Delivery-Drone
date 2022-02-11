@@ -180,9 +180,12 @@ class DroneController:
                     p = 50
                 else:
                     p = 25
-                diff_radians, preLat, preLon = self.diffRadians(3, lat, lon, preLat, preLon)
+                
+                diff_radians = self.diffRadians(3, lat, lon, preLat, preLon)
+                
                 self.move_relative(0, 0, 0, diff_radians)
                 self.drone.fly_direct(roll=0, pitch=p, yaw=0, vertical_movement=0, duration=0.2)
+                
                 preLat = lat
                 preLon = lon
                 lat, lon = self.avgGPS(3)
