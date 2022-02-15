@@ -4,8 +4,8 @@ import signal
 import sys
 
 
-LATITUDE_DESTINATION = 39.960949649116785
-LONGITUDE_DESTINATION = -75.18757379939173
+LATITUDE_DESTINATION = 39.96147141121459
+LONGITUDE_DESTINATION = -75.18766440922718
 #LATITUDE_ORIGIN = 0
 #LONGTITUDE_ORIGIN = 0
 
@@ -143,17 +143,21 @@ if __name__ == "__main__":
     bebop.smart_sleep(1)
 
     # print battery
-    print("Battery : "+str(bebop.sensors.battery))
+    # print("Battery : "+str(bebop.sensors.battery))
+    # bebop.smart_sleep(2)
 
     # set bebop current speed for fly_direct
     # test api changes
-    bebop.max_tilt(30)
-    bebop.max_vertical_speed(2.5)
-    bebop.max_rotation_speed(100)
     
     print("Take off\n")
     bebop.safe_takeoff(10)
 
+    print("break1")
+    bebop.max_tilt(30)
+    print("break2")
+    bebop.max_vertical_speed(2.5)
+    print("break3")
+    bebop.max_rotation_speed(200)
     # bebop.fly_direct(roll=0, pitch=0, yaw=0, vertical_movement=100, duration=0.5)
     bebop.move_relative(0, 0, -1, 0)
     
@@ -192,9 +196,9 @@ if __name__ == "__main__":
     v = 2
 
     while(d > 0.25):
-        if d > 3:
+        if d > 5:
             p = 75
-            v = 2
+            v = 3
         elif d <= 3 and d > 1:
             p = 25
             v = 1

@@ -28,11 +28,13 @@ bebop.safe_takeoff(5)
 
 while True:
     try:
-        p = int(input("Enter pitch: "))
+        d = int(input("Enter distance: "))
         v = float(input("Enter max_tilt: "))
-        t = float(input("Enter duration: "))
-        bebop.set_max_tilt(v)
-        bebop.fly_direct(roll=0, pitch=p, yaw=0, vertical_movement=0, duration=t)
-        # bebop.move_relative(0,0,0,3.18)
+       # a = float(input("Enter acceleration: "))
+        bebop.max_tilt(v)
+        #bebop.max_tilt_acceleration(a)
+
+        #bebop.fly_direct(roll=0, pitch=p, yaw=0, vertical_movement=0, duration=t)
+        bebop.move_relative(d,0,0,0)
     except ValueError:
         print("Input invalid")
