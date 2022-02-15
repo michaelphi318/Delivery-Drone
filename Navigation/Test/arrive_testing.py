@@ -142,15 +142,20 @@ if __name__ == "__main__":
     # print("Sleeping")
     bebop.smart_sleep(1)
 
+    # print battery
+    print("Battery : "+str(bebop.sensors.battery))
+
     # set bebop current speed for fly_direct
-    bebop.set_max_tilt(30)
-    bebop.set_max_vertical_speed(2.5)
+    # test api changes
+    bebop.max_tilt(30)
+    bebop.max_vertical_speed(2.5)
+    bebop.max_rotation_speed(100)
     
     print("Take off\n")
     bebop.safe_takeoff(10)
 
-    bebop.fly_direct(roll=0, pitch=0, yaw=0, vertical_movement=100, duration=0.5)
-    # bebop.move_relative(0, 0, -1, 0)
+    # bebop.fly_direct(roll=0, pitch=0, yaw=0, vertical_movement=100, duration=0.5)
+    bebop.move_relative(0, 0, -1, 0)
     
     # print("Sleeping")
     bebop.smart_sleep(1)
@@ -165,9 +170,9 @@ if __name__ == "__main__":
     prevLon = lon
     
     print("Going foward\n")
-    bebop.fly_direct(roll=0, pitch=75, yaw=0, vertical_movement=0, duration=0.25)
-    bebop.smart_sleep(1)
-    # bebop.move_relative(2, 0, 0, 0)
+    # bebop.fly_direct(roll=0, pitch=75, yaw=0, vertical_movement=0, duration=0.25)
+    bebop.move_relative(2, 0, 0, 0)
+    # bebop.smart_sleep(1)
     
     lat, lon = avgGPS(bebop, 10)
     d = distanceGPS(lat, lon, LATITUDE_DESTINATION, LONGITUDE_DESTINATION)
@@ -222,9 +227,9 @@ if __name__ == "__main__":
             bebop.move_relative(0, 0, 0, -diff_radians)
         
         print("Going forward\n")
-        bebop.fly_direct(roll=0, pitch=p, yaw=0, vertical_movement=0, duration=0.5)
-        # bebop.move_relative(v, 0, 0, 0)
-        bebop.smart_sleep(0.5)
+        # bebop.fly_direct(roll=0, pitch=p, yaw=0, vertical_movement=0, duration=0.5)
+        bebop.move_relative(v, 0, 0, 0)
+        # bebop.smart_sleep(0.5)
         
         prevLat = lat
         prevLon = lon
