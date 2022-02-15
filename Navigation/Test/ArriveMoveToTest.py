@@ -3,8 +3,8 @@ from math import degrees, radians
 import signal, sys
 
 
-LATITUDE_DESTINATION = 39.960949649116785
-LONGITUDE_DESTINATION = -75.18757379939173
+LATITUDE_DESTINATION = 0.0
+LONGITUDE_DESTINATION = 0.0
 ALTITUDE_DESTINATION = 0.0
 
 def handler(signum, frame):
@@ -12,23 +12,6 @@ def handler(signum, frame):
     print("Emergency landing protocol - disconnecting")
     bebop.disconnect()
     sys.exit(1)
-
-def avgGPS(bebop, n):
-    lat_sum = 0
-    lon_sum = 0
-    alt_sum = 0
-
-    for i in range(n):
-        lat = bebop.sensors.sensors_dict["GpsLocationChanged_latitude"]
-        lon = bebop.sensors.sensors_dict["GpsLocationChanged_longitude"]
-        alt = bebop.sensors.sensors_dict["GpsLocationChanged_altitude"]
-        bebop.smart_sleep(0.1)
-    
-    lat_avg = lat_sum / n
-    lon_avg = lon_sum / n
-    alt_avg = alt_sum / n
-
-    return lat_avg, lon_avg, alt_avg
 
 if __name__ == "__main__":
     signal.signal(signal.SIGINT, handler)
@@ -47,7 +30,7 @@ if __name__ == "__main__":
     bebop.smart_sleep(1)
 
     # print battery
-    print("Battery : "+str(bebop.sensors.battery))
+    print("Battery : " + str(bebop.sensors.battery))
 
     print("Take off\n")
     bebop.safe_takeoff(10)
@@ -56,6 +39,9 @@ if __name__ == "__main__":
     lat = degrees(LATITUDE_DESTINATION)
     lon = degrees(LONGITUDE_DESTINATION)
     alt = ALTITUDE_DESTINATION
+    print("Latitude: " + str(lat) + " degree")
+    print("Longitude: " + str(lon) + " degree")
+    print("Altitude: " + str(alt) + " m")
     bebop.move_to(lat, lon, alt, "TO_TARGET")
 
     # Land
