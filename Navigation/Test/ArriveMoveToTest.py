@@ -3,9 +3,9 @@ from math import degrees, radians
 import signal, sys
 
 
-LATITUDE_DESTINATION = 0.0
-LONGITUDE_DESTINATION = 0.0
-ALTITUDE_DESTINATION = 0.0
+LATITUDE_DESTINATION = 39.96146904165966
+LONGITUDE_DESTINATION = -75.18767610000323
+ALTITUDE_DESTINATION = 30
 
 def handler(signum, frame):
     bebop.safe_land(10)

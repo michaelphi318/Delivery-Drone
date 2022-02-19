@@ -4,8 +4,8 @@ import signal
 import sys
 
 
-LATITUDE_DESTINATION = 39.96147141121459
-LONGITUDE_DESTINATION = -75.18766440922718
+LATITUDE_DESTINATION = 39.96146904165966
+LONGITUDE_DESTINATION = -75.18767610000323
 #LATITUDE_ORIGIN = 0
 #LONGTITUDE_ORIGIN = 0
 
@@ -155,9 +155,10 @@ if __name__ == "__main__":
     print("break1")
     bebop.max_tilt(30)
     print("break2")
-    bebop.max_vertical_speed(2.5)
+    bebop.max_vertical_speed(5)
     print("break3")
     bebop.max_rotation_speed(200)
+    bebop.max_horizontal_speed(5)
     # bebop.fly_direct(roll=0, pitch=0, yaw=0, vertical_movement=100, duration=0.5)
     bebop.move_relative(0, 0, -1, 0)
     
@@ -196,18 +197,21 @@ if __name__ == "__main__":
     v = 2
 
     while(d > 0.25):
+        if d > 10:
+            p = 100
+            v = 8
         if d > 5:
             p = 75
-            v = 3
+            v = 4
         elif d <= 3 and d > 1:
             p = 25
-            v = 1
+            v = 1.5
         elif d < 1 and d > 0.5:
             p = 10
-            v = 0.5
+            v = 0.75
         else:
             p = 5
-            v = 0.5
+            v = 0.3875
         
         diff_radians = diffRadians(lat, lon, prevLat, prevLon)
 
@@ -227,11 +231,11 @@ if __name__ == "__main__":
 
         if abs(diff_radians) > 5 * pi / 180:
             print("Rotating\n")
-            bebop.smart_sleep(1)
+            bebop.smart_sleep(0.1)
             bebop.move_relative(0, 0, 0, -diff_radians)
         
         print("Going forward\n")
-        # bebop.fly_direct(roll=0, pitch=p, yaw=0, vertical_movement=0, duration=0.5)
+        #bebop.fly_direct(roll=0, pitch=p, yaw=0, vertical_movement=0, duration=0.5)
         bebop.move_relative(v, 0, 0, 0)
         # bebop.smart_sleep(0.5)
         
