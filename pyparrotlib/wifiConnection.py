@@ -589,9 +589,9 @@ class WifiConnection:
                 packet += struct.pack(pack_char_list[i],param)
 
         if (usb_id is None):
-            packet += struct.pack("<BBBIBBH", enum_value)
+            packet += struct.pack("<I", enum_value)
         else:
-            packet += struct.pack("<BBBIBBH", usb_id, enum_value)
+            packet += struct.pack("<BI", usb_id, enum_value)
 
         if ack:
             return self.send_command_packet_ack(packet, self.sequence_counter['SEND_WITH_ACK'])

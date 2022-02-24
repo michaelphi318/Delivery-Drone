@@ -641,28 +641,47 @@ class Bebop():
         :param tilt: max tilt for both pitch and roll in degrees
         :return:
         """
-        if (tilt < 5 or tilt > 100):
-            print("Error: %s is not valid tilt. The tilt must be between 5 and 30 degrees" % tilt)
-            print("Ignoring command and returning")
-            return
+        # if (tilt < 5 or tilt > 100):
+        #     print("Error: %s is not valid tilt. The tilt must be between 5 and 30 degrees" % tilt)
+        #     print("Ignoring command and returning")
+        #     return
 
         command_tuple = self.command_parser.get_command_tuple("ardrone3", "PilotingSettings", "MaxTilt")
         self.drone_connection.send_param_command_packet(command_tuple, param_tuple=[tilt], param_type_tuple=['float'])
-        self.smart_sleep(1)
+        self.smart_sleep(0.2)
         # while (not self.sensors.max_tilt_changed):
         #     self.smart_sleep(0.1)
 
-    # def max_tilt_acceleration(self, a):
-    #     # if (a < 0 or a > 10):
-    #     #     print("Error: %s is not valid acceleration. The tilt must be between 0 and 2.5 m/s2" % a)
-    #     #     print("Ignoring command and returning")
-    #     #     return
+    def max_horizontal_speed(self, speed):
+        """
+        Set max pitch/roll in degrees
 
-    #     command_tuple = self.command_parser.get_command_tuple("ardrone3", "PilotingSettings", "setAutonomousFlightMaxHorizontalAcceleration")
-    #     self.drone_connection.send_param_command_packet(command_tuple, param_tuple=[a], param_type_tuple=['float'])
-    #     self.smart_sleep(1)
-    #     # while (not self.sensors.max_tilt_changed):
-    #     #     self.smart_sleep(0.1)
+        :param tilt: max tilt for both pitch and roll in degrees
+        :return:
+        """
+        # if (speed < 5 or speed > 100):
+        #     print("Error: %s is not valid tilt. The tilt must be between 5 and 30 degrees" % speed)
+        #     print("Ignoring command and returning")
+        #     return
+
+        command_tuple = self.command_parser.get_command_tuple("ardrone3", "PilotingSettings", "setAutonomousFlightMaxHorizontalSpeed")
+        self.drone_connection.send_param_command_packet(command_tuple, param_tuple=[speed], param_type_tuple=['float'])
+        self.smart_sleep(0.2)
+        # while (not self.sensors.max_tilt_changed):
+        #     self.smart_sleep(0.1)
+
+
+    def max_tilt_acceleration(self, a):
+        # if (a < 0 or a > 10):
+        #     print("Error: %s is not valid acceleration. The tilt must be between 0 and 2.5 m/s2" % a)
+        #     print("Ignoring command and returning")
+        #     return
+
+        command_tuple = self.command_parser.get_command_tuple("ardrone3", "PilotingSettings", "setAutonomousFlightMaxHorizontalAcceleration")
+        self.drone_connection.send_param_command_packet(command_tuple, param_tuple=[a], param_type_tuple=['float'])
+        self.smart_sleep(0.2)
+        # while (not self.sensors.max_tilt_changed):
+        #     self.smart_sleep(0.1)
         
     def set_max_tilt_rotation_speed(self, speed):
         """
