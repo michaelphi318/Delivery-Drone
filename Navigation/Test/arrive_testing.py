@@ -152,11 +152,8 @@ if __name__ == "__main__":
     print("Take off\n")
     bebop.safe_takeoff(10)
 
-    print("break1")
     bebop.max_tilt(30)
-    print("break2")
     bebop.max_vertical_speed(5)
-    print("break3")
     bebop.max_rotation_speed(200)
     bebop.max_horizontal_speed(5)
     # bebop.fly_direct(roll=0, pitch=0, yaw=0, vertical_movement=100, duration=0.5)
@@ -200,18 +197,23 @@ if __name__ == "__main__":
         if d > 10:
             p = 100
             v = 8
-        if d > 5:
+            print(v)
+        elif d > 5:
             p = 75
             v = 4
+            print(v)
         elif d <= 3 and d > 1:
             p = 25
             v = 1.5
+            print(v)
         elif d < 1 and d > 0.5:
             p = 10
             v = 0.75
+            print(v)
         else:
             p = 5
             v = 0.3875
+            print(v)
         
         diff_radians = diffRadians(lat, lon, prevLat, prevLon)
 
