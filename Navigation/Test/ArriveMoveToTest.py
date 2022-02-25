@@ -39,7 +39,10 @@ if __name__ == "__main__":
     print("Latitude: " + str(lat) + " degree")
     print("Longitude: " + str(lon) + " degree")
     print("Altitude: " + str(alt) + " m")
-    bebop.move_to(lat, lon, alt, "TO_TARGET")
+    bebop.move_to(lat, lon, alt, "NONE", 0.5)
+    
+    # move 1m ahead
+    bebop.move_relative(1,0,0,0)
     
     print("Sleeping")
     bebop.smart_sleep(1)
