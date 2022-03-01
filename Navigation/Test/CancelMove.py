@@ -22,9 +22,9 @@ if __name__ == "__main__":
     success = bebop.connect(10)
     print(success)
 
-    if not success:
-        print("Connection failed\n")
-        sys.exit(1)
+    # if not success:
+    #     print("Connection failed\n")
+    #     sys.exit(1)
     
     # print("Sleeping")
     bebop.smart_sleep(1)
@@ -34,8 +34,8 @@ if __name__ == "__main__":
     bebop.smart_sleep(2)
 
     # create threads
-    thread1 = Thread(target=t1, args=())
-    thread2 = Thread(target=t2, args=())
+    thread1 = Thread(target=t1)
+    thread2 = Thread(target=t2)
 
     thread1.start()
     thread2.start()
