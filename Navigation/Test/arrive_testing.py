@@ -163,11 +163,8 @@ if __name__ == "__main__":
     print("Take off\n")
     bebop.safe_takeoff(10)
 
-    print("break1")
     bebop.max_tilt(30)
-    print("break2")
     bebop.max_vertical_speed(5)
-    print("break3")
     bebop.max_rotation_speed(200)
     bebop.max_horizontal_speed(5)
     # bebop.fly_direct(roll=0, pitch=0, yaw=0, vertical_movement=100, duration=0.5)

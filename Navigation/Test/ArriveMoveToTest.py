@@ -5,7 +5,7 @@ import signal, sys
 
 LATITUDE_DESTINATION = 39.96146904165966
 LONGITUDE_DESTINATION = -75.18767610000323
-ALTITUDE_DESTINATION = 30
+ALTITUDE_DESTINATION = 32
 
 def handler(signum, frame):
     bebop.safe_land(10)
@@ -29,9 +29,6 @@ if __name__ == "__main__":
     # print("Sleeping")
     bebop.smart_sleep(1)
 
-    # print battery
-    print("Battery : " + str(bebop.sensors.battery))
-
     print("Take off\n")
     bebop.safe_takeoff(10)
 
@@ -42,7 +39,13 @@ if __name__ == "__main__":
     print("Latitude: " + str(lat) + " degree")
     print("Longitude: " + str(lon) + " degree")
     print("Altitude: " + str(alt) + " m")
-    bebop.move_to(lat, lon, alt, "TO_TARGET")
+    bebop.move_to(lat, lon, alt, "NONE", 0.5)
+    
+    # move 1m ahead
+    bebop.move_relative(1,0,0,0)
+    
+    print("Sleeping")
+    bebop.smart_sleep(1)
 
     # Land
     print("\nPrepare for Landing\n")

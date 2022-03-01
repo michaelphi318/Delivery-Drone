@@ -448,12 +448,26 @@ class Bebop():
         while (not self.sensors.RelativeMoveEnded):
             self.smart_sleep(0.01)
 
-    def move_to(self, latitude, longitude, altitude, orientation_mode):
-        (command_tuple, enum_tuple) = self.command_parser.get_command_tuple_with_enum("ardrone3",
-                                                                                      "Piloting", "moveTo", orientation_mode)
-        param_tuple = [latitude, longitude, altitude]
-        param_type_tuple = ['double', 'double', 'double']
-        return self.drone_connection.send_enum_param_command_packet(command_tuple, enum_tuple, param_tuple, param_type_tuple)
+    def move_to(self, latitude, longitude, altitude, orientation_mode, heading=None):
+        if (orientation_mode not in ("NONE", "TO_TARGET", "HEADING_START", "HEADING_DURING")):
+            print("Error: %s is not a valid direction.  Must be one of %s" % orientation_mode, "NONE, TO_TARGET, HEADING_START, or HEADING_DURING")
+            print("Ignoring command and returning")
+            return
+
+        (command_tuple, enum_tuple) = self.command_parser.get_command_tuple_with_enum("ardrone3", "Piloting", "moveTo", orientation_mode)
+        # param_tuple = [latitude, longitude, altitude]
+        # param_type_tuple = ['double', 'double', 'double']
+        # self.drone_connection.send_enum_param_command_packet(command_tuple, enum_tuple, param_tuple, param_type_tuple)
+        
+        # if heading is not None:
+        param_tuple = [latitude, longitude, altitude, enum_tuple, heading]
+        param_type_tuple = ['double', 'double', 'double', 'enum', 'float']
+        # else:
+        #     param_tuple = [latitude, longitude, altitude, enum_tuple]
+        #     param_type_tuple = ['double', 'double', 'double', 'enum']
+
+        self.drone_connection.send_param_command_packet(command_tuple, param_tuple, param_type_tuple)
+        
 
     def start_video_stream(self):
         """
@@ -726,10 +740,10 @@ class Bebop():
         :param speed: max vertical speed in m/s
         :return:
         """
-        if (speed < 0.5 or speed > 2.5):
-            print("Error: %s is not valid speed. The speed must be between 0.5 and 2.5 m/s" % speed)
-            print("Ignoring command and returning")
-            return
+        # if (speed < 0.5 or speed > 2.5):
+        #     print("Error: %s is not valid speed. The speed must be between 0.5 and 2.5 m/s" % speed)
+        #     print("Ignoring command and returning")
+        #     return
 
         command_tuple = self.command_parser.get_command_tuple("ardrone3", "PilotingSettings", "setAutonomousFlightMaxVerticalSpeed")
         self.drone_connection.send_param_command_packet(command_tuple, param_tuple=[speed], param_type_tuple=['float'])
