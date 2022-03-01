@@ -14,7 +14,8 @@
 from adafruit_ble import BLERadio
 from adafruit_ble.advertising.standard import ProvideServicesAdvertisement
 from adafruit_ble.services.nordic import UARTService
-
+import signal
+import sys
 # ----------------------------------------------------------------
 # Initialize global variables for the main loop.
 ble = BLERadio()
@@ -22,6 +23,11 @@ uart_connection = None
 
 # ----------------------------------------------------------------
 # Begin the main processing loop.
+def handler(signum, frame):
+    bebop.safe_land(10)
+    print("Emergency landing protocol - disconnecting")
+    bebop.disconnect()
+    sys.exit(1)
 
 while True:
     if not uart_connection:
