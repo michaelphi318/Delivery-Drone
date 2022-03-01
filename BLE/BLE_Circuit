@@ -37,7 +37,7 @@ connected  = False
 sampling_timer    = 0.0
 last_time         = time.monotonic()
 sampling_interval = 0.10
-
+avoid = False
 # ----------------------------------------------------------------
 # Begin the main processing loop.
 
@@ -72,6 +72,8 @@ while True:
             advertised = False
             cp.red_led = False
         else:
-            if x is not None:
+            if uart.readline():
+                avoid = True
+            if x is not None and not avoid:
                 uart.write(b"%.3f,%.3f,%.3f\n" % (x, y, z))
                 #uart.write(b"%d\n" % (sonar.distance))
