@@ -16,20 +16,20 @@ success = bebop.connect(10)
 bebop.smart_sleep(1)
 print(success)
 
-print("Take off\n")
-bebop.safe_takeoff(10)
+# print("Take off\n")
+# bebop.safe_takeoff(10)
 
 # print("Sleeping")
 bebop.smart_sleep(1)
 
 #bebop.fly_direct(roll=0, pitch=0, yaw=0, vertical_movement=100, duration=0.75)
-bebop.move_relative(0, 0, -2, 0)
+# bebop.move_relative(0, 0, -2, 0)
     
 # print("Sleeping")
 bebop.smart_sleep(1)
 
-print("sleeping")
-bebop.smart_sleep(5)
+# print("sleeping")
+# bebop.smart_sleep(5)
 Lat_min = -2000
 Lat_max = 2000
 Lon_min = -2000
