@@ -3,9 +3,9 @@ from math import degrees, radians
 import signal, sys
 
 
-LATITUDE_DESTINATION = 39.96146904165966
-LONGITUDE_DESTINATION = -75.18767610000323
-ALTITUDE_DESTINATION = 32
+LATITUDE_DESTINATION = 39.96111695555687
+LONGITUDE_DESTINATION = -75.18761155555504
+ALTITUDE_DESTINATION = 26.0
 
 def handler(signum, frame):
     bebop.safe_land(10)
@@ -39,13 +39,17 @@ if __name__ == "__main__":
     print("Latitude: " + str(lat) + " degree")
     print("Longitude: " + str(lon) + " degree")
     print("Altitude: " + str(alt) + " m")
-    bebop.move_to(lat, lon, alt, "NONE", 0.5)
-    
-    # move 1m ahead
-    bebop.move_relative(1,0,0,0)
-    
+    print("Move to destination")
+    bebop.move_to(lat, lon, alt, "abc", 0.5)
     print("Sleeping")
     bebop.smart_sleep(1)
+    # bebop.move_to(lat, lon, alt, "NONE")
+    
+    # move 1m ahead
+    # print("Move relative")
+    # bebop.move_relative(1,0,0,0)
+    # print("Sleeping")
+    # bebop.smart_sleep(1)
 
     # Land
     print("\nPrepare for Landing\n")
