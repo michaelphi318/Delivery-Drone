@@ -17,10 +17,10 @@ def handler(signum, frame):
 
 def distanceGPS(lat1, lon1, lat2, lon2):
     # convert from degree to radians
-    #lat1 = radians(lat1)
-    #lon1 = radians(lon1)
-    #lat2 = radians(lat2)
-    #lon2 = radians(lon2)
+    lat1 = radians(lat1)
+    lon1 = radians(lon1)
+    lat2 = radians(lat2)
+    lon2 = radians(lon2)
 
     # haversine formula
     dlat = lat2 - lat1
@@ -32,7 +32,7 @@ def distanceGPS(lat1, lon1, lat2, lon2):
     # Radius of earth in kilometers (6371). Use 3956 for miles
     #r = 6371
     # Raius of earth in m
-    r = 6371 * 10
+    r = 6371 * 1000
       
     # calculate the result
     return (c * r)
@@ -126,6 +126,17 @@ def avgGPS(bebop, n):
 
     return lat_avg, lon_avg
 
+def t1(list):
+    while True:
+        lat = bebop.sensors.sensors_dict["GpsLocationChanged_latitude"]
+        lon = bebop.sensors.sensors_dict["GpsLocationChanged_longitude"]
+        alt = bebop.sensors.sensors_dict["GpsLocationChanged_altitude"]
+        #bebop.smart_sleep(0.1)
+        if(list[2][0] != lat and lat != 500):
+            list.append([lat, lon, alt])
+            list.pop(0)
+
+
 if __name__ == "__main__":
     signal.signal(signal.SIGINT, handler)
 
@@ -200,7 +211,7 @@ if __name__ == "__main__":
         if d > 10:
             p = 100
             v = 8
-        if d > 5:
+        elif d > 5:
             p = 75
             v = 4
         elif d <= 3 and d > 1:
@@ -229,7 +240,7 @@ if __name__ == "__main__":
         
         # diff_radians = loc_radians - current_radians
 
-        if abs(diff_radians) > 5 * pi / 180:
+        if abs(diff_radians) > 2 * pi / 180:
             print("Rotating\n")
             bebop.smart_sleep(0.1)
             bebop.move_relative(0, 0, 0, -diff_radians)
