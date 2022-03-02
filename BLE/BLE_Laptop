@@ -11,35 +11,61 @@
 # Import the Adafruit Bluetooth library, part of Blinka.  Technical reference:
 # https://circuitpython.readthedocs.io/projects/ble/en/latest/api.html
 
+from concurrent.futures import thread
 from adafruit_ble import BLERadio
 from adafruit_ble.advertising.standard import ProvideServicesAdvertisement
 from adafruit_ble.services.nordic import UARTService
 import signal
 import sys
+import asyncio
+import platform
+from threading import Thread
 # ----------------------------------------------------------------
 # Initialize global variables for the main loop.
-ble = BLERadio()
-uart_connection = None
-
+# ble = BLERadio()
+# uart_connection = None
+# uart = UARTService()
 # ----------------------------------------------------------------
 # Begin the main processing loop.
-def handler(signum, frame):
-    bebop.safe_land(10)
-    print("Emergency landing protocol - disconnecting")
-    bebop.disconnect()
-    sys.exit(1)
+#trigger = False
+def t1():
+    global trigger
+    ble = BLERadio()
+    uart_connection = None
+    # uart = UARTService()
+    while True:
+        if not uart_connection:
+            print("Trying to connect...")
+            for adv in ble.start_scan(ProvideServicesAdvertisement):
+                if UARTService in adv.services:
+                    uart_connection = ble.connect(adv)
+                    print("Connected")
+                    break
+            ble.stop_scan()
 
-while True:
-    if not uart_connection:
-        print("Trying to connect...")
-        for adv in ble.start_scan(ProvideServicesAdvertisement):
-            if UARTService in adv.services:
-                uart_connection = ble.connect(adv)
-                print("Connected")
-                break
-        ble.stop_scan()
+        if uart_connection and uart_connection.connected:
+            uart_service = uart_connection[UARTService]
+            while uart_connection.connected:
+                if trigger:
+                    stop = "5"
+                    print("stop")
+                    uart_service.write(stop.encode("utf-8"))
+                    trigger = False
+                print(uart_service.readline().decode("utf-8").rstrip())
 
-    if uart_connection and uart_connection.connected:
-        uart_service = uart_connection[UARTService]
-        while uart_connection.connected:
-            print(uart_service.readline().decode("utf-8").rstrip())
+def t2():
+    global trigger
+    i = input()
+    if i == "q":
+        trigger = True
+
+if __name__ == "__main__":
+    trigger = False
+    thread1 = Thread(target=t1)
+    thread2 = Thread(target=t2)
+
+    thread1.start()
+    thread2.start()
+
+    thread1.join()
+    thread2.join()

@@ -121,6 +121,10 @@ def t2(list):
     bebop.max_horizontal_speed(5)
 
     while(d > 0.25):
+        for e in list:
+            print(e)
+        print()
+
         if d > 10:
             p = 100
             v = 8
