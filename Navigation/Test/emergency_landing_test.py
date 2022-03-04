@@ -23,6 +23,8 @@ bebop.smart_sleep(5)
 
 bebop.safe_takeoff(10)
 
+bebop.move_relative(10, 0, 0, 0)
+
 while True:
     bebop.smart_sleep(1)
 
