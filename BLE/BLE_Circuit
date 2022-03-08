@@ -37,6 +37,7 @@ sampling_timer    = 0.0
 last_time         = time.monotonic()
 sampling_interval = 0.10
 trigger = False
+packageDelivery = False
 # ----------------------------------------------------------------
 # Begin the main processing loop.
 def drop_package():
@@ -61,10 +62,10 @@ while True:
     sampling_timer -= interval
     if sampling_timer < 0.0:
         sampling_timer += sampling_interval
-        front = sonar_forward.distance
+        front = sonar_front.distance
         left = sonar_left.distance
         right = sonar_right.distance
-        up = solar_up.distance
+        #up = sonar_up.distance
     else:
         x = None
 
@@ -88,6 +89,7 @@ while True:
             if uart.readline().decode("utf-8"):
                 drop_package()
                 trigger = True
+                uart.write("1")
             if x is not None and not trigger:
                 uart.write(b"%.3f,%.3f,%.3f\n" % (left, right, front))
                 #uart.write(b"%d\n" % (sonar.distance))

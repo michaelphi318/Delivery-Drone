@@ -4,8 +4,10 @@ from threading import Thread
 from statistics import mean
 from math import radians, cos, sin, asin, atan, sqrt, pi
 
-LATITUDE_DESTINATION = 39.96147141121459
-LONGITUDE_DESTINATION = -75.18766440922718
+# LATITUDE_DESTINATION = 39.96147141121459
+# LONGITUDE_DESTINATION = -75.18766440922718
+LATITUDE_DESTINATION = 39.96097142223963
+LONGITUDE_DESTINATION = -75.1876248861172
 
 def handler(signum, frame):
     bebop.safe_land(10)
@@ -80,7 +82,7 @@ def t2(list):
     lon = 0
 
 
-    bebop.move_relative(0, 0, -1, 0)
+    bebop.move_relative(0, 0, -2, 0)
     
     # bebop.smart_sleep(0.2)
 

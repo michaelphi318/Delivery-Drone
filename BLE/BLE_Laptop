@@ -30,6 +30,7 @@ from threading import Thread
 #trigger = False
 def t1():
     global trigger
+    global packageDelivery
     ble = BLERadio()
     uart_connection = None
     # uart = UARTService()
@@ -51,6 +52,10 @@ def t1():
                     print("stop")
                     uart_service.write(stop.encode("utf-8"))
                     trigger = False
+                    packageDelivery = True
+                if packageDelivery:
+                    if uart_service.readline().decode("utf-8").rstrip():
+                        packageDelivery = False
                 print(uart_service.readline().decode("utf-8").rstrip())
 
 def t2():
@@ -61,6 +66,7 @@ def t2():
 
 if __name__ == "__main__":
     trigger = False
+    packageDelivery = False
     thread1 = Thread(target=t1)
     thread2 = Thread(target=t2)
 

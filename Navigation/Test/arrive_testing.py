@@ -4,8 +4,8 @@ import signal
 import sys
 
 
-LATITUDE_DESTINATION = 39.96146904165966
-LONGITUDE_DESTINATION = -75.18767610000323
+LATITUDE_DESTINATION = 39.96147141121459
+LONGITUDE_DESTINATION = -75.18766440922718
 #LATITUDE_ORIGIN = 0
 #LONGTITUDE_ORIGIN = 0
 
@@ -168,7 +168,7 @@ if __name__ == "__main__":
     bebop.max_rotation_speed(200)
     bebop.max_horizontal_speed(5)
     # bebop.fly_direct(roll=0, pitch=0, yaw=0, vertical_movement=100, duration=0.5)
-    bebop.move_relative(0, 0, -1, 0)
+    bebop.move_relative(0, 0, -2, 0)
     
     # print("Sleeping")
     bebop.smart_sleep(1)
