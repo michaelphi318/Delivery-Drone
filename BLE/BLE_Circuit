@@ -1,3 +1,4 @@
+from tabnanny import check
 import time
 import board
 import pwmio
@@ -51,7 +52,13 @@ def drop_package():
 
     dropper.angle = 180
     time.sleep(10)
-    
+
+def check_distance(sonar):
+    if sonar is None or sonar > 400:
+        return 400
+    else:
+        return sonar
+
 while True:
 
     # Read the accelerometer at regular intervals.  Measure elapsed time and
@@ -90,6 +97,9 @@ while True:
                 drop_package()
                 trigger = True
                 uart.write("1")
+            left = check_distance(left)
+            right = check_distance(right)
+            front = check_distance(front)
             if x is not None and not trigger:
                 uart.write(b"%.3f,%.3f,%.3f\n" % (left, right, front))
                 #uart.write(b"%d\n" % (sonar.distance))
