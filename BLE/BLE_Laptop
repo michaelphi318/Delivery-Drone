@@ -47,15 +47,15 @@ def t1():
         if uart_connection and uart_connection.connected:
             uart_service = uart_connection[UARTService]
             while uart_connection.connected:
-                # if trigger:
-                #     stop = "5"
-                #     print("stop")
-                #     uart_service.write(stop.encode("utf-8"))
-                #     trigger = False
-                #     packageDelivery = True
-                # if packageDelivery:
-                #     if uart_service.readline().decode("utf-8").rstrip():
-                #         packageDelivery = False
+                if trigger:
+                    stop = "5"
+                    print("stop")
+                    uart_service.write(stop.encode("utf-8"))
+                    trigger = False
+                    packageDelivery = True
+                if packageDelivery:
+                    if uart_service.readline().decode("utf-8").rstrip():
+                        packageDelivery = False
                 print(uart_service.readline().decode("utf-8").rstrip())
 
 def t2():
