@@ -14,9 +14,27 @@ from math import radians, cos, sin, asin, atan, sqrt, pi
 class GPS(Thread):
     def __init__(self):
         super().__inint__()
-        self.coords = [[0.0, 0.0, 0.0]] * 3
+        self.coords = [[0.0, 0.0, 0.0] for i in range(3)] 
         self.latitude_destination = 39.96147141121459
         self.longitude_destination = -75.18766440922718
+        # boolean to switch to fly_direct
+        # self.switch = False
+
+    def avgGPS(self):
+        lat_sum = 0
+        lon_sum = 0
+        alt_sum = 0
+
+        for i in range(len(self.coords)):
+            lat_sum += self.coords[i][0]
+            lon_sum += self.coords[i][1]
+            alt_sum += self.coords[i][2]
+        
+        lat = lat_sum / len(self.coords)
+        lon = lon_sum / len(self.coords)
+        alt = alt_sum / len(self.coords)
+
+        return lat, lon
 
     def distanceGPS(self, lat1, lon1, lat2, lon2):
         # convert from degree to radians
@@ -29,16 +47,17 @@ class GPS(Thread):
         dlat = lat2 - lat1
         dlon = lon2 - lon1
         a = sin(dlat / 2) ** 2 + cos(lat1) * cos(lat2) * sin(dlon / 2) ** 2
-    
         c = 2 * asin(sqrt(a))
         
         # Radius of earth in kilometers (6371). Use 3956 for miles
-        #r = 6371
         # Raius of earth in m
         r = 6371 * 1000
         
         # calculate the result
-        return (c * r)
+        d = c * r
+        print("Distance to destination: %.2f m\n" % (d))
+
+        return d
 
     def diffRadians(self, lat, lon, preLat, preLon):
         loc_radians = atan((self.latitude_destination - lat) / (self.longitude_destination - lon))
@@ -76,6 +95,7 @@ class Arrive(Thread):
         self.stopped = True
         self.condition = Condition()
         self.gps = GPS()
+        self.gps.start()
 
     def arrive(self):
         d = 1000
@@ -89,11 +109,12 @@ class Arrive(Thread):
         
         # bebop.smart_sleep(0.2)
 
-        while(self.gps.coords[0][0] == 0):
+        while self.gps.coords[0][0] == 0.0:
             continue
 
-        lat = (self.gps.coords[0][0] + self.gps.coords[1][0] + self.gps.coords[2][0]) / 3
-        lon = (self.gps.coords[0][1] + self.gps.coords[1][1] + self.gps.coords[2][1]) / 3
+        # lat = (self.gps.coords[0][0] + self.gps.coords[1][0] + self.gps.coords[2][0]) / 3
+        # lon = (self.gps.coords[0][1] + self.gps.coords[1][1] + self.gps.coords[2][1]) / 3
+        lat, lon = self.gps.avgGPS()
         
         loc_radians = atan((self.gps.latitude_destination - lat) / (self.gps.longitude_destination - lon))
         
@@ -112,18 +133,17 @@ class Arrive(Thread):
         while((self.gps.coords[0][0] + self.gps.coords[1][0] + self.gps.coords[2][0]) / 3 == lat):
             continue
 
-        lat = (self.gps.coords[0][0] + self.gps.coords[1][0] + self.gps.coords[2][0]) / 3
-        lon = (self.gps.coords[0][1] + self.gps.coords[1][1] + self.gps.coords[2][1]) / 3
+        # lat = (self.gps.coords[0][0] + self.gps.coords[1][0] + self.gps.coords[2][0]) / 3
+        # lon = (self.gps.coords[0][1] + self.gps.coords[1][1] + self.gps.coords[2][1]) / 3
+        lat, lon = self.gps.avgGPS()
 
         d = self.gps.distanceGPS(lat, lon, self.gps.latitude_destination, self.gps.longitude_destination)
-        print("Distance to destination: " + str(d) + " m\n")
-
-        bebop.max_tilt(30)
-        print("break2")
+        
+        
+        '''bebop.max_tilt(30)
         bebop.max_vertical_speed(5)
-        print("break3")
         bebop.max_rotation_speed(200)
-        bebop.max_horizontal_speed(5)
+        bebop.max_horizontal_speed(5)'''
 
         while(d > 0.25):
             for e in list:
@@ -148,20 +168,6 @@ class Arrive(Thread):
             
             diff_radians = self.gps.diffRadians(lat, lon, prevLat, prevLon)
 
-            # loc_radians = atan((LATITUDE_DESTINATION - lat) / (LONGITUDE_DESTINATION - lon))
-            
-            # if((LONGITUDE_DESTINATION - lon) < 0):
-            #     loc_radians += pi
-            
-            # dlat = lat - prevLat
-            # dlon = lon - prevLon
-            # current_radians = atan(dlat / dlon)
-            
-            # if (dlon < 0):
-            #     current_radians += pi 
-            
-            # diff_radians = loc_radians - current_radians
-
             if abs(diff_radians) > 5 * pi / 180:
                 print("Rotating\n")
                 bebop.smart_sleep(0.1)
@@ -179,11 +185,11 @@ class Arrive(Thread):
                 print("Break")
                 bebop.move_relative(v, 0, 0, 0)
 
-            lat = (self.gps.coords[0][0] + self.gps.coords[1][0] + self.gps.coords[2][0]) / 3
-            lon = (self.gps.coords[0][1] + self.gps.coords[1][1] + self.gps.coords[2][1]) / 3
+            # lat = (self.gps.coords[0][0] + self.gps.coords[1][0] + self.gps.coords[2][0]) / 3
+            # lon = (self.gps.coords[0][1] + self.gps.coords[1][1] + self.gps.coords[2][1]) / 3
+            lat, lon = self.gps.avgGPS()
 
             d = self.gps.distanceGPS(lat, lon, self.gps.latitude_destination, self.gps.longitude_destination)
-            print("Distance to destination: " + str(d) + " m\n")
         # bebop.safe_land(5)
         # bebop.disconnect()
         # sys.exit(0)
@@ -195,8 +201,9 @@ class Arrive(Thread):
             with self.condition:
                 if self.stopped:
                     self.condition.wait()
-            # print("Flying")
+            
             # self.arrive()
+            print("Flying")
             bebop.move_relative(10, 0, 0, 0)
     
     def pause(self):
@@ -252,8 +259,8 @@ def test():
     t2.start()
     
     # imediately pause Avoidance thread
-    t1.resume()
-    t2.pause()
+    # t1.resume()
+    # t2.pause()
 
     # Test case
     for i in range(3):
@@ -274,14 +281,11 @@ def test():
     bebop.disconnect()
     sys.exit(0)
     #----------------------------------------------------------
-
 #--------------------------------------------------------------
 
 
 #-------------------------Main---------------------------------
 if __name__ == "__main__":
-
-    #---------------------Connect and Fly----------------------
     bebop = Bebop()
     print("Connecting to the drone\n")
     success = bebop.connect(10)
@@ -296,9 +300,12 @@ if __name__ == "__main__":
 
     # take off
     bebop.safe_takeoff(10)
-    #---------------------------------------------------------
 
-    #------------------------Test-----------------------------
+    bebop.max_tilt(30)
+    bebop.max_vertical_speed(5)
+    bebop.max_rotation_speed(200)
+    bebop.max_horizontal_speed(5)
+
     try:
         test()
     except:
@@ -306,8 +313,6 @@ if __name__ == "__main__":
         bebop.disconnect()
     finally:
         sys.exit(1)
-    #---------------------------------------------------------
-
 #-------------------------------------------------------------
 
 
