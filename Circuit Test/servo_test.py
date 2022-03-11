@@ -13,10 +13,3 @@ while True:
     
     dropper.angle = 70 #closed
     time.sleep(1)
-
-    #for angle in range(0, 180, 1):  # 0 - 180 deg step of 1
-     #   dropper.angle = angle
-      #  time.sleep(0.05)
-    #for angle in range(180, 0, -1): # 180 - 0 deg step of 1 (reversed)
-     #   dropper.angle = angle
-      #  time.sleep(0.05)
