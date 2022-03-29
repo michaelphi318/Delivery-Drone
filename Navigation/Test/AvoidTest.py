@@ -13,10 +13,10 @@ from math import radians, cos, sin, asin, atan, sqrt, pi
 
 class GPS(Thread):
     def __init__(self):
-        super().__inint__()
+        super().__init__()
         self.coords = [[0.0, 0.0, 0.0] for i in range(3)] 
-        self.latitude_destination = 39.96147141121459
-        self.longitude_destination = -75.18766440922718
+        self.latitude_destination = 39.96085615833244
+        self.longitude_destination = -75.187534969445
         # boolean to switch to fly_direct
         # self.switch = False
 
@@ -95,7 +95,6 @@ class Arrive(Thread):
         self.stopped = True
         self.condition = Condition()
         self.gps = GPS()
-        self.gps.start()
 
     def arrive(self):
         d = 1000
@@ -140,16 +139,12 @@ class Arrive(Thread):
         d = self.gps.distanceGPS(lat, lon, self.gps.latitude_destination, self.gps.longitude_destination)
         
         
-        '''bebop.max_tilt(30)
+        bebop.max_tilt(30)
         bebop.max_vertical_speed(5)
         bebop.max_rotation_speed(200)
-        bebop.max_horizontal_speed(5)'''
+        bebop.max_horizontal_speed(5)
 
         while(d > 0.25):
-            for e in list:
-                print(e)
-            print()
-
             if d > 10:
                 p = 100
                 v = 8
@@ -202,9 +197,9 @@ class Arrive(Thread):
                 if self.stopped:
                     self.condition.wait()
             
-            # self.arrive()
-            print("Flying")
-            bebop.move_relative(10, 0, 0, 0)
+            self.arrive()
+            # print("Flying")
+            # bebop.move_relative(10, 0, 0, 0)
     
     def pause(self):
         self.stopped = True
@@ -255,25 +250,28 @@ def test():
     #---------------------Execute threads----------------------
     # for thread in threads:
     #     thread.start()
+    t1.gps.start()
     t1.start()
-    t2.start()
+    t1.join()
+    t1.gps.join()
+    # t2.start()
     
     # imediately pause Avoidance thread
     # t1.resume()
     # t2.pause()
 
     # Test case
-    for i in range(3):
-        print("Iteration %d" % (i + 1))
-        t1.resume()
-        t2.pause()
-        time.sleep(0.5)
-        t1.pause()
-        t2.resume()
-        time.sleep(0.5)
+    # for i in range(3):
+    #     print("Iteration %d" % (i + 1))
         # t1.resume()
         # t2.pause()
-        print()
+        # time.sleep(0.5)
+        # t1.pause()
+        # t2.resume()
+        # time.sleep(0.5)
+        # t1.resume()
+        # t2.pause()
+        # print()
     #----------------------------------------------------------
 
     #--------------Disconnect and Land the drone---------------
@@ -301,18 +299,16 @@ if __name__ == "__main__":
     # take off
     bebop.safe_takeoff(10)
 
-    bebop.max_tilt(30)
-    bebop.max_vertical_speed(5)
-    bebop.max_rotation_speed(200)
-    bebop.max_horizontal_speed(5)
+    test()
 
-    try:
-        test()
-    except:
-        bebop.safe_land(5)
-        bebop.disconnect()
-    finally:
-        sys.exit(1)
+    # try:
+    #     test()
+    # except Exception as e:
+    #     print(e)
+    #     bebop.safe_land(5)
+    #     bebop.disconnect()
+    # finally:
+    #     sys.exit(1)
 #-------------------------------------------------------------
 
 
