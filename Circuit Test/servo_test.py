@@ -9,7 +9,7 @@ dropper = servo.Servo(pwm) #servo object
 
 while True:
     dropper.angle = 148 #open position
-    time.sleep(10)
+    time.sleep(1)
     
     dropper.angle = 70 #closed
-    time.sleep(1)
+    time.sleep(10)
