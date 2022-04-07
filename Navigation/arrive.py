@@ -5,6 +5,7 @@ import time
 from math import radians, cos, sin, asin, atan, sqrt, pi
 from gps import *
 
+
 class Arrive(Thread):
     def __init__(self, bebop):
         super().__init__()
@@ -14,15 +15,17 @@ class Arrive(Thread):
         self.stopped = True
         self.condition = Condition()
         self.gps = GPS(self.bebop)
+    
+    def run(self):
+        self.resume()
 
-    def arrive(self):
         d = 1000
         p = 100
         v = 2
-
         lat = 0
         lon = 0
 
+        #------------------------------------Fly the drone foward-----------------------------------------
         self.bebop.move_relative(0, 0, -1, 0)
         
         # bebop.smart_sleep(0.2)
@@ -36,7 +39,7 @@ class Arrive(Thread):
         
         loc_radians = atan((self.gps.latitude_destination - lat) / (self.gps.longitude_destination - lon))
         
-        if((self.gps.longitude_destination - lon) < 0):
+        if ((self.gps.longitude_destination - lon) < 0):
             loc_radians += pi
         
         prevLat = lat
@@ -46,9 +49,8 @@ class Arrive(Thread):
         # bebop.fly_direct(roll=0, pitch=75, yaw=0, vertical_movement=0, duration=0.25)
         self.bebop.move_relative(2, 0, 0, 0)
         # bebop.smart_sleep(1)
-
         
-        while((self.gps.coords[0][0] + self.gps.coords[1][0] + self.gps.coords[2][0]) / 3 == lat):
+        while(self.gps.avgGPS() == lat):
             continue
 
         # lat = (self.gps.coords[0][0] + self.gps.coords[1][0] + self.gps.coords[2][0]) / 3
@@ -57,13 +59,18 @@ class Arrive(Thread):
 
         d = self.gps.distanceGPS(lat, lon, self.gps.latitude_destination, self.gps.longitude_destination)
         
-        
         self.bebop.max_tilt(30)
         self.bebop.max_vertical_speed(5)
         self.bebop.max_rotation_speed(200)
         self.bebop.max_horizontal_speed(5)
+        #-----------------------------------------------------------------------------------------------------
 
+        #--------------------------------------Fly to destination---------------------------------------------
         while(d > 0.25):
+            with self.condition:
+                if self.stopped:
+                    self.condition.wait()
+
             if d > 10:
                 p = 100
                 v = 8
@@ -95,30 +102,26 @@ class Arrive(Thread):
             prevLat = lat
             prevLon = lon
 
-            while((self.gps.coords[0][0] + self.gps.coords[1][0] + self.gps.coords[2][0]) / 3 == lat):
-                print("Break")
-                self.bebop.move_relative(v, 0, 0, 0)
+            # while((self.gps.coords[0][0] + self.gps.coords[1][0] + self.gps.coords[2][0]) / 3 == lat):
+            #     print("Break")
+            #     self.bebop.move_relative(v, 0, 0, 0)
 
             # lat = (self.gps.coords[0][0] + self.gps.coords[1][0] + self.gps.coords[2][0]) / 3
             # lon = (self.gps.coords[0][1] + self.gps.coords[1][1] + self.gps.coords[2][1]) / 3
             lat, lon = self.gps.avgGPS()
 
             d = self.gps.distanceGPS(lat, lon, self.gps.latitude_destination, self.gps.longitude_destination)
-        # bebop.safe_land(5)
-        # bebop.disconnect()
-        # sys.exit(0)
-    
-    def run(self):
-        self.resume()
+        #--------------------------------------------------------------------------------------------------------
 
-        while True:
-            with self.condition:
-                if self.stopped:
-                    self.condition.wait()
-            
-            self.arrive()
-            # print("Flying")
-            # bebop.move_relative(10, 0, 0, 0)
+        # self.arrive()
+        # print("Flying")
+        # bebop.move_relative(10, 0, 0, 0)
+
+        #--------------Disconnect and Land the drone---------------
+        self.bebop.safe_land(5)
+        self.bebop.disconnect()
+        sys.exit(0)
+        #----------------------------------------------------------
     
     def pause(self):
         self.stopped = True

@@ -10,8 +10,8 @@ class GPS(Thread):
         super().__init__()
         self.bebop = bebop
         self.coords = [[0.0, 0.0, 0.0] for i in range(3)] 
-        self.latitude_destination = 39.96085615833244
-        self.longitude_destination = -75.187534969445
+        self.latitude_destination = 39.961457730555004
+        self.longitude_destination = -75.18765490277792
         # boolean to switch to fly_direct
         # self.switch = False
 
@@ -78,6 +78,6 @@ class GPS(Thread):
             lon = self.bebop.sensors.sensors_dict["GpsLocationChanged_longitude"]
             alt = self.bebop.sensors.sensors_dict["GpsLocationChanged_altitude"]
         
-            if(self.coords[2][0] != lat and lat != 500):
+            if (self.coords[2][0] != lat and lat != 500.0):
                 self.coords.append([lat, lon, alt])
                 self.coords.pop(0)

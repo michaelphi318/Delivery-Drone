@@ -21,7 +21,9 @@ class Avoidance(Thread):
             with self.condition:
                 if self.stopped:
                     self.condition.wait()
-            # print("Stop Flying")
+
+            print("Stop Flying")
+            self.bebop.loop_breaker = True
             self.bebop.cancel_move_relative()
     
     def pause(self):
