@@ -160,6 +160,8 @@ class BebopSensors:
 
 class Bebop():
     def __init__(self, drone_type="Bebop2", ip_address=None):
+        # break move relative for loop
+        self.loop_breaker = False
         """
         Create a new Bebop object.  Assumes you have connected to the Bebop's wifi
 
@@ -446,13 +448,23 @@ class Bebop():
 
         # sleep until it ends
         while (not self.sensors.RelativeMoveEnded):
+            if self.loop_breaker:
+                break
+            
             self.smart_sleep(0.01)
+
+    def cancel_move_relative(self):
+        command_tuple = self.command_parser.get_command_tuple("ardrone3", "Piloting", "CancelMoveBy")
+        self.drone_connection.send_noparam_high_priority_command_packet(command_tuple)
+
+        # while (not self.sensors.RelativeMoveEnded):
+        #     self.smart_sleep(0.01)
 
     def move_to(self, latitude, longitude, altitude, orientation_mode, heading=None):
         if (orientation_mode not in ("NONE", "TO_TARGET", "HEADING_START", "HEADING_DURING")):
             print("Error: %s is not a valid direction.  Must be one of %s" % orientation_mode, "NONE, TO_TARGET, HEADING_START, or HEADING_DURING")
             print("Ignoring command and returning")
-            return
+            return self.safe_land(5)
 
         (command_tuple, enum_tuple) = self.command_parser.get_command_tuple_with_enum("ardrone3", "Piloting", "moveTo", orientation_mode)
         # param_tuple = [latitude, longitude, altitude]
@@ -461,7 +473,7 @@ class Bebop():
         
         # if heading is not None:
         param_tuple = [latitude, longitude, altitude, enum_tuple, heading]
-        param_type_tuple = ['double', 'double', 'double', 'enum', 'float']
+        param_type_tuple = ['double', 'double', 'double', 'u32', 'float']
         # else:
         #     param_tuple = [latitude, longitude, altitude, enum_tuple]
         #     param_type_tuple = ['double', 'double', 'double', 'enum']
