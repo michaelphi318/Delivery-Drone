@@ -21,9 +21,9 @@ print(success)
 print("sleeping")
 bebop.smart_sleep(5)
 
-bebop.safe_takeoff(10)
+# bebop.safe_takeoff(10)
 
-bebop.move_relative(10, 0, 0, 0)
+# bebop.move_relative(10, 0, 0, 0)
 
 while True:
     bebop.smart_sleep(1)

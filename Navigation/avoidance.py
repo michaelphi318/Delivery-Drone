@@ -14,6 +14,15 @@ class Avoidance(Thread):
         self.stopped = True
         self.condition = Condition()
 
+    def turnRight(self):
+        return
+    
+    def turnLeft(self):
+        return
+
+    def goUP(self):
+        return
+
     def run(self):
         self.resume()
 
