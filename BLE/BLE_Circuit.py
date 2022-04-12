@@ -45,21 +45,26 @@ trigger = False
 def drop_package():
     pwm = pwmio.PWMOut(board.D0, frequency=50,  duty_cycle=5)
     dropper = servo.Servo(pwm)
-    
+
     dropper.angle = 148 #open position
     time.sleep(10)
-    
+
     dropper.angle = 70 #closed
     time.sleep(1)
-    
+
 while True:
     try:
         front = sonar_front.distance
-        left = sonar_left.distance
-        right = sonar_right.distance
     except:
         front = 400
+    try:
+        left = sonar_left.distance
+        
+    except:
         left = 400
+    try:
+        right = sonar_left.distance
+    except:
         right = 400
     # Read the accelerometer at regular intervals.  Measure elapsed time and
     # wait until the update timer has elapsed.
