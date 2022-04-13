@@ -15,13 +15,16 @@ class Avoidance(Thread):
         self.condition = Condition()
 
     def turnRight(self):
-        return
+        print("Turn right")
     
     def turnLeft(self):
-        return
+        print("Turn left")
 
-    def goUP(self):
-        return
+    def moveForward(self):
+        print("Move forward")
+
+    def moveUP(self):
+        print("Move up")
 
     def run(self):
         self.resume()

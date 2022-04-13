@@ -7,20 +7,33 @@ from gps import *
 from arrive import *
 from avoidance import *
 
+def exit():
+    while True:
+        user_input = input("Enter your command: ")
+        if (user_input.lower() == "q"):
+            bebop.safe_land(10)
+            print("Emergency landing protocol - disconnecting")
+            bebop.disconnect()
+            sys.exit(1)
 
 def test():
-    #---------------------Declare threads----------------------
-    t1 = Arrive(bebop)
-    t2 = Avoidance(bebop)
+    #---------------------Declare------------------------------
+    lat = 39.961346144444555
+    lon = -75.18747012777759
+    arrive = Arrive(bebop, lat, lon)
+    avoidance = Avoidance(bebop)
+    exitThread = Thread(target=exit)
     #----------------------------------------------------------
 
     #---------------------Execute threads----------------------
-    t1.gps.start()
-    t1.start()
+    arrive.gps.start()
+    arrive.start()
+    exitThread.start()
     # t2.start()
     
-    t1.gps.join()
-    t1.join()
+    arrive.gps.join()
+    arrive.join()
+    exitThread.join()
     # t2.join()
     
     # imediately pause Avoidance thread
@@ -56,11 +69,6 @@ def connect():
 if __name__ == "__main__":
     bebop = Bebop()
 
-    # Connect
     connect()
-
-    # Take off
     bebop.safe_takeoff(10)
-    
-    # Fly
     test()

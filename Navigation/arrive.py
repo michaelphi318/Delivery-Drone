@@ -7,16 +7,32 @@ from gps import *
 
 
 class Arrive(Thread):
-    def __init__(self, bebop):
+    def __init__(self, bebop, lat, lon):
         super().__init__()
         self.bebop = bebop
         # python program exits when only daemon threads are left
         # self.daemon = True
         self.stopped = True
         self.condition = Condition()
-        self.gps = GPS(self.bebop)
+        self.gps = GPS(self.bebop, lat, lon)
     
     def run(self):
+        def move(dx, dy, dz, dradians):
+            if self.bebop.sensors.sensors_dict["GpsLocationChanged_latitude"] != 500:
+                print("Going foward (move_relative)\n")
+                self.bebop.move_relative(dx, dy, dz, dradians)
+            else:
+                print("Going foward (fly_direct)\n")
+                self.bebop.fly_direct(roll=0, pitch=75, yaw=0, vertical_movement=0, duration=0.25)
+
+        def rotate(dradians):
+            if self.bebop.sensors.sensors_dict["GpsLocationChanged_latitude"] != 500:
+                print("Rotate (move_relative)\n")
+                self.bebop.move_relative(0, 0, 0, -dradians)
+            else:
+                print("Rotate (fly_direct)\n")
+                self.bebop.fly_direct(roll=0, pitch=75, yaw=0, vertical_movement=0, duration=0.25)
+
         self.resume()
 
         d = 1000
@@ -26,7 +42,8 @@ class Arrive(Thread):
         lon = 0
 
         #------------------------------------Fly the drone foward-----------------------------------------
-        self.bebop.move_relative(0, 0, -1, 0)
+        # self.bebop.move_relative(0, 0, -1, 0)
+        move(0, 0, -1, 0)
         
         # bebop.smart_sleep(0.2)
 
@@ -45,9 +62,9 @@ class Arrive(Thread):
         prevLat = lat
         prevLon = lon
         
-        print("Going foward\n")
         # bebop.fly_direct(roll=0, pitch=75, yaw=0, vertical_movement=0, duration=0.25)
-        self.bebop.move_relative(2, 0, 0, 0)
+        # self.bebop.move_relative(2, 0, 0, 0)
+        move(2, 0, 0, 0)
         # bebop.smart_sleep(1)
         
         while(self.gps.avgGPS() == lat):
@@ -92,11 +109,13 @@ class Arrive(Thread):
             if abs(diff_radians) > 5 * pi / 180:
                 print("Rotating\n")
                 self.bebop.smart_sleep(0.1)
-                self.bebop.move_relative(0, 0, 0, -diff_radians)
+                # self.bebop.move_relative(0, 0, 0, -diff_radians)
+                move(0, 0, 0, -diff_radians)
             
             print("Going forward\n")
             #bebop.fly_direct(roll=0, pitch=p, yaw=0, vertical_movement=0, duration=0.5)
-            self.bebop.move_relative(v, 0, 0, 0)
+            # self.bebop.move_relative(v, 0, 0, 0)
+            move(v, 0, 0, 0)
             # bebop.smart_sleep(0.5)
             
             prevLat = lat

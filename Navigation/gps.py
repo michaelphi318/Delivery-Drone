@@ -6,14 +6,12 @@ from math import radians, cos, sin, asin, atan, sqrt, pi
 
 
 class GPS(Thread):
-    def __init__(self, bebop):
+    def __init__(self, bebop, lat, lon):
         super().__init__()
         self.bebop = bebop
         self.coords = [[0.0, 0.0, 0.0] for i in range(3)] 
-        self.latitude_destination = 39.961457730555004
-        self.longitude_destination = -75.18765490277792
-        # boolean to switch to fly_direct
-        # self.switch = False
+        self.latitude_destination = lat
+        self.longitude_destination = lon
 
     def avgGPS(self):
         lat_sum = 0

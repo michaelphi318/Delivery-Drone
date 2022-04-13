@@ -30,12 +30,12 @@ bebop.smart_sleep(1)
 
 # print("sleeping")
 # bebop.smart_sleep(5)
-Lat_min = -2000
-Lat_max = 2000
-Lon_min = -2000
-Lon_max = 2000
-Alt_min = -2000
-Alt_max = 2000
+Lat_min = 2000
+Lat_max = -2000
+Lon_min = 2000
+Lon_max = -2000
+Alt_min = 2000
+Alt_max = -2000
 Alt_sum = 0
 Lon_sum = 0
 Lat_sum = 0
