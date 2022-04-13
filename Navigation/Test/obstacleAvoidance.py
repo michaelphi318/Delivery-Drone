@@ -23,12 +23,16 @@ import asyncio
 import platform
 from threading import Thread
 
+from numpy import double
+
 sensorData = [] #Global list of distance read from each sensor
-avoidanceTrigger = False #Boolean to see if obstacle avoidance should run
+
 distanceThreshold = 60
+global avoidanceTrigger
 def t1():
     global trigger
     global packageDelivery
+    global avoidanceTrigger
     ble = BLERadio()
     uart_connection = None
     # uart = UARTService()
@@ -45,8 +49,10 @@ def t1():
         if uart_connection and uart_connection.connected:
             uart_service = uart_connection[UARTService]
             while uart_connection.connected:
-                sensorData = uart_service.readline().decode("utf-8").rstrip()
-
+                data = uart_service.readline().decode("utf-8").rstrip()
+                if data:
+                    sensorData = list(map(int, data.split(',')))
+                    print(sensorData)
                 #If obstacle avoidance is not running then it will check to see if it should run
                 if not avoidanceTrigger:
                     for i in sensorData:
@@ -54,6 +60,29 @@ def t1():
                             avoidanceTrigger = True
 
 def obstacleAvoidance():
+    global avoidanceTrigger
+    sensorData = [400,400,400]
+
+    # if left:
+    #     if not front and not right:
+    #         print("Move right")
+    #     elif not front and right:
+    #         print("Move forward")        
+    #     elif front and not right:
+    #         print("Move right and go forward")
+    #     elif front and right:
+    #         print("Move up")
+    # elif right:
+    #     if not left and not front:
+    #         print("Move left")
+    #     elif not left and front:
+    #         print("Move Left and go foward")
+    # elif front:
+    #     if not left and not right:
+    #         print("Go right or left or up")
+    # else:
+    #     print("Go forward")
+
     while True:
         if avoidanceTrigger:
             if sensorData[0] < distanceThreshold and sensorData[2] < distanceThreshold:
@@ -82,6 +111,8 @@ def obstacleAvoidance():
 
 if __name__ == "__main__":
     trigger = False
+    
+    avoidanceTrigger = False #Boolean to see if obstacle avoidance should run
     packageDelivery = False
     thread1 = Thread(target=t1)
     thread2 = Thread(target=obstacleAvoidance)
