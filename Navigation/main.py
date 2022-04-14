@@ -9,7 +9,7 @@ from avoidance import *
 
 def exit():
     while True:
-        user_input = input("Enter your command: ")
+        user_input = input()
         if (user_input.lower() == "q"):
             bebop.safe_land(10)
             print("Emergency landing protocol - disconnecting")
@@ -18,8 +18,8 @@ def exit():
 
 def test():
     #---------------------Declare------------------------------
-    lat = 39.961346144444555
-    lon = -75.18747012777759
+    lat = 39.96093390559246
+    lon = -75.18765920833292
     arrive = Arrive(bebop, lat, lon)
     avoidance = Avoidance(bebop)
     exitThread = Thread(target=exit)
@@ -58,9 +58,9 @@ def connect():
     print("Connecting to the drone\n")
     success = bebop.connect(10)
 
-    # if not success:
-    #     print("Connection failed\n")
-    #     sys.exit(1)
+    if not success:
+        print("Connection failed\n")
+        sys.exit(1)
         
     # print("Sleeping")
     bebop.smart_sleep(3)

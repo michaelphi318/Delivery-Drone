@@ -39,6 +39,10 @@ bebop.safe_takeoff(5)
 #         #bebop.max_tilt_acceleration(a)
 
 #         #bebop.fly_direct(roll=0, pitch=p, yaw=0, vertical_movement=0, duration=t)
+bebop.move_relative(0, 0, -5, 0)
 bebop.move_relative(5,0,0,0)
     # except ValueError:
     #     print("Input invalid")
+
+while True:
+    bebop.smart_sleep(1)

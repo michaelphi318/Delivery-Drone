@@ -38,7 +38,7 @@ class Arrive(Thread):
         lon = 0
 
         #------------------------------------Fly the drone foward-----------------------------------------
-        self.bebop.move_relative(0, 0, -0.5, 0)
+        self.bebop.move_relative(0, 0, -1, 0)
         checkMove()
         
         # bebop.smart_sleep(0.2)
@@ -106,7 +106,7 @@ class Arrive(Thread):
                 print("Rotating\n")
                 self.bebop.smart_sleep(0.1)
                 self.bebop.move_relative(0, 0, 0, -diff_radians)
-                checkMove(0, 0, 0, -diff_radians)
+                # checkMove()
             
             print("Going forward\n")
             #bebop.fly_direct(roll=0, pitch=p, yaw=0, vertical_movement=0, duration=0.5)
