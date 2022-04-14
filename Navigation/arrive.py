@@ -1,15 +1,15 @@
 from pyparrot.Bebop import Bebop
-import sys, signal
+import sys
 from threading import Thread, Condition
-import time
-from math import radians, cos, sin, asin, atan, sqrt, pi
+from math import atan, pi
 from gps import *
 
 
 class Arrive(Thread):
     def __init__(self, bebop, lat, lon):
         super().__init__()
-        self.bebop = bebop
+        if isinstance(bebop, Bebop):
+            self.bebop = bebop
         # python program exits when only daemon threads are left
         # self.daemon = True
         self.stopped = True

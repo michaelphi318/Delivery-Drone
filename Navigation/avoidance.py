@@ -8,7 +8,8 @@ from math import radians, cos, sin, asin, atan, sqrt, pi
 class Avoidance(Thread):
     def __init__(self, bebop):
         super().__init__()
-        self.bebop = bebop
+        if isinstance(bebop, Bebop):
+            self.bebop = bebop
         # python program exits when only daemon threads are left
         # self.daemon = True
         self.stopped = True

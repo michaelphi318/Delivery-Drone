@@ -1,8 +1,7 @@
 from pyparrot.Bebop import Bebop
-import sys, signal, os
-from threading import Thread, Condition
+import sys, os
+from threading import Thread
 import time
-from math import radians, cos, sin, asin, atan, sqrt, pi
 from gps import *
 from arrive import *
 from avoidance import *

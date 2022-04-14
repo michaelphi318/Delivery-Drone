@@ -1,14 +1,14 @@
+from numpy import isin
 from pyparrot.Bebop import Bebop
-import sys, signal
 from threading import Thread, Condition
-import time
 from math import radians, cos, sin, asin, atan, sqrt, pi
 
 
 class GPS(Thread):
     def __init__(self, bebop, lat, lon):
         super().__init__()
-        self.bebop = bebop
+        if isinstance(bebop, Bebop):
+            self.bebop = bebop
         self.coords = [[0.0, 0.0, 0.0] for i in range(3)] 
         self.latitude_destination = lat
         self.longitude_destination = lon
@@ -65,7 +65,6 @@ class GPS(Thread):
         if (dlon < 0):
             current_radians += pi
             
-        # diff_radians = current_radians - loc_radians
         diff_radians = loc_radians - current_radians
 
         return diff_radians
