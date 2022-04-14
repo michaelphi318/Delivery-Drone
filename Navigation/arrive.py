@@ -22,8 +22,8 @@ class Arrive(Thread):
                 if self.gps.coords[i][0] == 500:
                     self.bebop.loop_breaker = True
                     self.bebop.cancel_move_relative()
-                    print("GPS is shit")
-                    print("Going foward (fly_direct)\n")
+                    print("GPS is bad, switch to fly_direct")
+                    print("Going foward\n")
                     self.bebop.fly_direct(roll=0, pitch=75, yaw=0, vertical_movement=0, duration=0.25)
 
         self.resume()
@@ -125,10 +125,6 @@ class Arrive(Thread):
 
             d = self.gps.distanceGPS(lat, lon, self.gps.latitude_destination, self.gps.longitude_destination)
         #--------------------------------------------------------------------------------------------------------
-
-        # self.arrive()
-        # print("Flying")
-        # bebop.move_relative(10, 0, 0, 0)
 
         #--------------Disconnect and Land the drone---------------
         self.bebop.safe_land(5)

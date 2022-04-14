@@ -54,21 +54,20 @@ def test():
 
 def connect():
     print("Connecting to the drone\n")
-    success = bebop.connect(10)
+    success = bebop.connect(5)
 
     if not success:
         print("Connection failed\n")
         sys.exit(1)
         
-    # print("Sleeping")
-    bebop.smart_sleep(3)
+    bebop.smart_sleep(2)
     
 
 if __name__ == "__main__":
     bebop = Bebop()
     path = os.path.dirname(os.path.realpath(__file__)) + "/log.txt"
     sys.stdout = Logger(path)
-    
+
     connect()
     bebop.safe_takeoff(10)
     test()
