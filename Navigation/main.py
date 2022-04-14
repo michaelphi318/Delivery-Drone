@@ -1,11 +1,12 @@
 from pyparrot.Bebop import Bebop
-import sys, signal
+import sys, signal, os
 from threading import Thread, Condition
 import time
 from math import radians, cos, sin, asin, atan, sqrt, pi
 from gps import *
 from arrive import *
 from avoidance import *
+from logger import *
 
 def exit():
     while True:
@@ -29,29 +30,26 @@ def test():
     arrive.gps.start()
     arrive.start()
     exitThread.start()
-    # t2.start()
+    # avoidance.start()
     
     arrive.gps.join()
     arrive.join()
     exitThread.join()
-    # t2.join()
+    # avoidance.join()
     
     # imediately pause Avoidance thread
-    # t1.resume()
-    # t2.pause()
+    # arrive.resume()
+    # avoidance.pause()
 
     # Test case
-    # for i in range(3):
-        # print("Iteration %d" % (i + 1))
-        # t1.resume()
-        # t2.pause()
-        # time.sleep(0.5)
-        # t1.pause()
-        # t2.resume()
-        # time.sleep(0.5)
-        # t1.resume()
-        # t2.pause()
-        # print()
+    # arrive.resume()
+    # avoidance.pause()
+    # time.sleep(0.5)
+    # arrive.pause()
+    # avoidance.resume()
+    # time.sleep(0.5)
+    # arrive.resume()
+    # avoidance.pause()
     #----------------------------------------------------------
 
 def connect():
@@ -68,7 +66,9 @@ def connect():
 
 if __name__ == "__main__":
     bebop = Bebop()
-
+    path = os.path.dirname(os.path.realpath(__file__)) + "/log.txt"
+    sys.stdout = Logger(path)
+    
     connect()
     bebop.safe_takeoff(10)
     test()

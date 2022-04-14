@@ -18,16 +18,13 @@ class Arrive(Thread):
     
     def run(self):
         def checkMove():
-            temp = False
             for i in range(len(self.gps.coords)):
                 if self.gps.coords[i][0] == 500:
-                    temp = True
-                    break
-            if temp == True:
-                self.bebop.loop_breaker = True
-                self.bebop.cancel_move_relative()
-                print("Going foward (fly_direct)\n")
-                self.bebop.fly_direct(roll=0, pitch=75, yaw=0, vertical_movement=0, duration=0.25)
+                    self.bebop.loop_breaker = True
+                    self.bebop.cancel_move_relative()
+                    print("GPS is shit")
+                    print("Going foward (fly_direct)\n")
+                    self.bebop.fly_direct(roll=0, pitch=75, yaw=0, vertical_movement=0, duration=0.25)
 
         self.resume()
 
@@ -38,6 +35,7 @@ class Arrive(Thread):
         lon = 0
 
         #------------------------------------Fly the drone foward-----------------------------------------
+        print("Fly up 1m\n")
         self.bebop.move_relative(0, 0, -1, 0)
         checkMove()
         
@@ -58,7 +56,7 @@ class Arrive(Thread):
         prevLat = lat
         prevLon = lon
         
-        # bebop.fly_direct(roll=0, pitch=75, yaw=0, vertical_movement=0, duration=0.25)
+        print("Going forward to check for angle\n")
         self.bebop.move_relative(2, 0, 0, 0)
         checkMove()
         # bebop.smart_sleep(1)
