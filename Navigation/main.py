@@ -58,9 +58,9 @@ def connect():
     print("Connecting to the drone\n")
     success = bebop.connect(10)
 
-    if not success:
-        print("Connection failed\n")
-        sys.exit(1)
+    # if not success:
+    #     print("Connection failed\n")
+    #     sys.exit(1)
         
     # print("Sleeping")
     bebop.smart_sleep(3)
