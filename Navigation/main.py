@@ -43,10 +43,10 @@ def test():
     # Test case
     # arrive.resume()
     # avoidance.pause()
-    # time.sleep(0.5)
+    # time.sleep(20)
     # arrive.pause()
     # avoidance.resume()
-    # time.sleep(0.5)
+    # time.sleep(5)
     # arrive.resume()
     # avoidance.pause()
     #----------------------------------------------------------
