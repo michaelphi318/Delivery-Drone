@@ -1,6 +1,7 @@
 from pyparrot.Bebop import Bebop
 from threading import Thread
 import signal, sys, os
+from math import radians
 
 
 def handler(signum, frame):
@@ -47,7 +48,7 @@ if __name__ == "__main__":
                 bebop.move_relative(i, 0, 0, 0)
             elif command.lower() == "r":
                 i = float(input("Enter rotation angle: "))
-                bebop.move_relative(0, 0, 0, i)
+                bebop.move_relative(0, 0, 0, radians(i))
             elif command.lower() == "v":
                 i = float(input("Enter distance to go vertical (negative for up, positive for down): "))
                 bebop.move_relative(0, 0, i, 0)
