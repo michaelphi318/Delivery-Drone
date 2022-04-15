@@ -24,7 +24,7 @@ lon = -75.18769108889548
 
 loc_radians = math.atan(lat/lon)
 
-print("sleeping")
+# print("sleeping")
 bebop.smart_sleep(5)
 
 bebop.safe_takeoff(10)
