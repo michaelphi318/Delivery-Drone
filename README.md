@@ -40,10 +40,6 @@ pip install adafruit-blinka-bleio
 
 pip install adafruit-circuitpython-ble
 
-Other Dependencies
-
-pip install numpy
-
 Reference Links:
 
 Repo
