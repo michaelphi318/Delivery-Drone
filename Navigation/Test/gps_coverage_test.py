@@ -1,6 +1,5 @@
 from pyparrot.Bebop import Bebop
 from threading import Thread
-import math
 import signal, sys, os
 
 
@@ -18,7 +17,7 @@ def gps():
         alt = bebop.sensors.sensors_dict["GpsLocationChanged_altitude"]
     
         if lat == 500 or lon == 500 or alt == 500:
-            print("GPS is 500")
+            print("GPS is 500, issue e command to land the drone (recommend)")
 
 if __name__ == "__main__":
     #connects the ctrl+C interrupt to the function
@@ -52,6 +51,8 @@ if __name__ == "__main__":
             elif command.lower() == "v":
                 i = float(input("Enter distance to go vertical (negative for up, positive for down): "))
                 bebop.move_relative(0, 0, i, 0)
+            elif command.lower() == "e":
+                break
             else:
                 print("Input invalid")
             # bebop.max_tilt(p)
@@ -66,3 +67,7 @@ if __name__ == "__main__":
 
     # while True:
     #     bebop.smart_sleep(1)
+
+    bebop.safe_land(5)
+    bebop.disconnect()
+    sys.exit(0)
