@@ -1,3 +1,4 @@
+from asyncore import read
 from pyparrot.Bebop import Bebop
 import sys, os
 from threading import Thread
@@ -19,20 +20,30 @@ def userInput():
             sys.exit(1)
         elif command == "p":
             stop = True
+        elif command == "r":
+            stop = False
+        else:
+            continue
 
+def readGPSFromFile():
+    data = []
+
+    with open("gps.txt", "r") as f:
+        data = list(map(float, f.readlines()))
+
+    return data[0], data[1]
 
 def test():
     #---------------------Declare------------------------------
-    lat = 39.96093390559246
-    lon = -75.18765920833292
+    lat, lon = readGPSFromFile
     arrive = Arrive(bebop, lat, lon)
     avoidance = Avoidance(bebop)
     inputThread = Thread(target=userInput)
     #----------------------------------------------------------
 
     arrive.start()
-    inputThread.start()
     avoidance.start()
+    inputThread.start()
 
     while arrive.is_alive:
         if stop:
