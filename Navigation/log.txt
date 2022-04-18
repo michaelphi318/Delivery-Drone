@@ -3,5 +3,5 @@ Connecting to the drone
 Setting up mDNS listener since this is not a Mambo
 Making a browser for _arsdk-090c._udp.local.
 [38;5;196m connection failed: did you remember to connect your machine to the Drone's wifi network? [0m
-Fly up 1m
+Connection failed
 
