@@ -1,5 +1,4 @@
 from pyparrot.Bebop import Bebop
-import sys
 from threading import Thread, Condition
 from math import atan, pi
 from gps import *
@@ -10,8 +9,6 @@ class Arrive(Thread):
         super().__init__()
         if isinstance(bebop, Bebop):
             self.bebop = bebop
-        # python program exits when only daemon threads are left
-        # self.daemon = True
         self.stopped = True
         self.condition = Condition()
         self.gps = GPS(self.bebop, lat, lon)
@@ -26,13 +23,14 @@ class Arrive(Thread):
                     print("Going foward\n")
                     self.bebop.fly_direct(roll=0, pitch=75, yaw=0, vertical_movement=0, duration=0.25)
 
-        self.resume()
-
         d = 1000
         p = 100
         v = 2
         lat = 0
         lon = 0
+
+        self.resume()
+        self.gps.start()
 
         #------------------------------------Fly the drone foward-----------------------------------------
         print("Fly up 1m\n")
@@ -129,7 +127,6 @@ class Arrive(Thread):
         #--------------Disconnect and Land the drone---------------
         self.bebop.safe_land(5)
         self.bebop.disconnect()
-        sys.exit(0)
         #----------------------------------------------------------
     
     def pause(self):

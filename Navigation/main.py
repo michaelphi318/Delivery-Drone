@@ -1,20 +1,25 @@
 from pyparrot.Bebop import Bebop
 import sys, os
 from threading import Thread
-import time
 from gps import *
 from arrive import *
 from avoidance import *
 from logger import *
 
-def exit():
+def userInput():
+    global stop
+
     while True:
-        user_input = input()
-        if (user_input.lower() == "q"):
+        command = input().lower()
+
+        if command == "q":
             bebop.safe_land(10)
             print("Emergency landing protocol - disconnecting")
             bebop.disconnect()
             sys.exit(1)
+        elif command == "p":
+            stop = True
+
 
 def test():
     #---------------------Declare------------------------------
@@ -22,34 +27,23 @@ def test():
     lon = -75.18765920833292
     arrive = Arrive(bebop, lat, lon)
     avoidance = Avoidance(bebop)
-    exitThread = Thread(target=exit)
+    inputThread = Thread(target=userInput)
     #----------------------------------------------------------
 
-    #---------------------Execute threads----------------------
-    arrive.gps.start()
     arrive.start()
-    exitThread.start()
-    # avoidance.start()
-    
-    arrive.gps.join()
-    arrive.join()
-    exitThread.join()
-    # avoidance.join()
-    
-    # imediately pause Avoidance thread
-    # arrive.resume()
-    # avoidance.pause()
+    inputThread.start()
+    avoidance.start()
 
-    # Test case
-    # arrive.resume()
-    # avoidance.pause()
-    # time.sleep(20)
-    # arrive.pause()
-    # avoidance.resume()
-    # time.sleep(5)
-    # arrive.resume()
-    # avoidance.pause()
-    #----------------------------------------------------------
+    while arrive.is_alive:
+        if stop:
+            arrive.pause()
+            avoidance.resume()
+        else:
+            arrive.resume()
+            avoidance.pause()
+    
+    arrive.join()
+    sys.exit(0)
 
 def connect():
     print("Connecting to the drone\n")
@@ -64,6 +58,7 @@ def connect():
 
 if __name__ == "__main__":
     bebop = Bebop()
+    stop = False    # test boolean
     path = os.path.dirname(os.path.realpath(__file__)) + "/log.txt"
     sys.stdout = Logger(path)
 

@@ -1,12 +1,12 @@
-from numpy import isin
 from pyparrot.Bebop import Bebop
-from threading import Thread, Condition
+from threading import Thread
 from math import radians, cos, sin, asin, atan, sqrt, pi
 
 
 class GPS(Thread):
     def __init__(self, bebop, lat, lon):
         super().__init__()
+        self.daemon = True
         if isinstance(bebop, Bebop):
             self.bebop = bebop
         self.coords = [[0.0, 0.0, 0.0] for i in range(3)] 

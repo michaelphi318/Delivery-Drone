@@ -1,17 +1,13 @@
 from pyparrot.Bebop import Bebop
-import sys, signal
 from threading import Thread, Condition
-import time
-from math import radians, cos, sin, asin, atan, sqrt, pi
 
 
 class Avoidance(Thread):
     def __init__(self, bebop):
         super().__init__()
+        self.daemon = True
         if isinstance(bebop, Bebop):
             self.bebop = bebop
-        # python program exits when only daemon threads are left
-        # self.daemon = True
         self.stopped = True
         self.condition = Condition()
 
@@ -28,8 +24,6 @@ class Avoidance(Thread):
         print("Move up")
 
     def run(self):
-        self.resume()
-
         while True:
             with self.condition:
                 if self.stopped:
