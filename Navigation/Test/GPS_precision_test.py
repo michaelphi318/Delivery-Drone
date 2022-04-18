@@ -1,5 +1,5 @@
 from pyparrot.Bebop import Bebop
-import sys
+import sys, os
 import signal
 
 def handler(signum, frame):
@@ -79,3 +79,7 @@ print("Altitude Average: " + str(Alt_avg) + " feet")
 print("DONE - disconnecting")
 bebop.safe_land(2)
 bebop.disconnect()
+
+f = open(os.path.dirname(__file__) + "/../gps.txt", "w")
+f.writelines([str(Lat_avg) + "\n", str(Lon_avg) + "\n", str(Alt_avg)])
+f.close()
