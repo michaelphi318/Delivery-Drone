@@ -1,6 +1,6 @@
 from pyparrot.Bebop import Bebop
 from threading import Thread
-import signal, sys, os
+import signal, sys, os, time
 from math import radians
 
 
@@ -20,6 +20,13 @@ def gps():
         if lat == 500 or lon == 500 or alt == 500:
             print("GPS is 500, issue e command to land the drone (recommend)")
             break
+
+def calibrate():
+    start_time = time.time()
+    bebop.flat_trim(0)
+    end_time = time.time()
+    print("Flat trim finished after %.2f" % (end_time - start_time))
+
 
 if __name__ == "__main__":
     #connects the ctrl+C interrupt to the function
