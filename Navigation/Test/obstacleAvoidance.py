@@ -25,7 +25,7 @@ from threading import Thread
 
 from numpy import double
 
-sensorData = [] #Global list of distance read from each sensor
+sensorData = [400, 400, 400] #Global list of distance read from each sensor
 
 distanceThreshold = 60
 global avoidanceTrigger
@@ -33,6 +33,7 @@ def t1():
     global trigger
     global packageDelivery
     global avoidanceTrigger
+    global sensorData
     ble = BLERadio()
     uart_connection = None
     # uart = UARTService()
@@ -61,50 +62,52 @@ def t1():
 
 def obstacleAvoidance():
     global avoidanceTrigger
-    sensorData = [400,400,400]
-
-    # if left:
-    #     if not front and not right:
-    #         print("Move right")
-    #     elif not front and right:
-    #         print("Move forward")        
-    #     elif front and not right:
-    #         print("Move right and go forward")
-    #     elif front and right:
-    #         print("Move up")
-    # elif right:
-    #     if not left and not front:
-    #         print("Move left")
-    #     elif not left and front:
-    #         print("Move Left and go foward")
-    # elif front:
-    #     if not left and not right:
-    #         print("Go right or left or up")
-    # else:
-    #     print("Go forward")
+    global sensorData
+    global distanceThreshold
 
     while True:
         if avoidanceTrigger:
-            if sensorData[0] < distanceThreshold and sensorData[2] < distanceThreshold:
-                print("Move right")
-                print("Move forward")
+            if(sensorData[0] < distanceThreshold):
+                left = '1'
             else:
-                print("Move up")
-            if sensorData[1] < distanceThreshold and sensorData[2] < distanceThreshold:
-                print("Move left")
-                print("Move forward")
+                left = '0'
+            if(sensorData[1] < distanceThreshold):
+                right = '1'
             else:
-                print("Move up")
-            if sensorData[2] < distanceThreshold:
-                print("Move up")
+                right = '0'
+            if(sensorData[2] < distanceThreshold):
+                front = '1'
+            else:
+                front = '0'
             
+            key = left + right + front
+            print(sensorData)
+            print(left, right, front)
+          
+            
+            if left:
+                if not front and not right:
+                    print("Move right")
+                elif not front and right:
+                    print("Move forward")        
+                elif front and not right:
+                    print("Move right and go forward")
+                elif front and right:
+                    print("Move up")
+            elif right:
+                if not left and not front:
+                    print("Move left")
+                elif not left and front:
+                    print("Move Left and go foward")
+            elif front:
+                if not left and not right:
+                    print("Go right or left or up")
+            else:
+                print("Go forward")
+
+
             #Checks if obstacle avoidance still needs to run
-            avoidanceCheck = True
-            for i in sensorData:
-                if i < distanceThreshold:
-                    avoidanceCheck = False
-            if avoidanceCheck:
-                avoidanceTrigger = False
+            avoidanceTrigger = not all(i >= distanceThreshold for i in sensorData)
             
             
 
