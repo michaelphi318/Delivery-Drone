@@ -1,6 +1,5 @@
 from pyparrot.Bebop import Bebop
 from threading import Thread, Condition
-from logger import *
 import sys, os, time, traceback
 
 
@@ -35,17 +34,19 @@ class Avoidance(Thread):
                 if self.terminate:
                     break
                 
-                print("Stop Flying")
+                print("\nStop Flying\n")
                 self.bebop.loop_breaker = True
                 self.bebop.cancel_move_relative()
                 self.bebop.loop_breaker = False
+            
+            print("Avoidance thread done\n")
         except:
+            print("Error in Avoidance class\n")
             traceback.print_exc()
-            print("\nEmergency land the drone")
+            print("\n\nEmergency land the drone")
             self.bebop.safe_land(5)
             self.bebop.disconnect()
-        finally:
-            print("Error in Avoidance class")
+            os._exit(1)
     
     def pause(self):
         self.stopped = True

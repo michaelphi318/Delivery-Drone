@@ -2,7 +2,6 @@ from pyparrot.Bebop import Bebop
 from threading import Thread, Condition
 from math import atan, pi
 from gps import *
-from logger import *
 import sys, os, time, traceback
 
 
@@ -128,16 +127,18 @@ class Arrive(Thread):
             #--------------------------------------------------------------------------------------------------------
 
             #--------------Disconnect and Land the drone---------------
+            print("Land the drone\n")
             self.bebop.safe_land(5)
             self.bebop.disconnect()
+            print("Arrive thread done\n")
             #----------------------------------------------------------
         except:
+            print("Error in Arrive class\n")
             traceback.print_exc()
-            print("\nEmergency land the drone")
+            print("\n\nEmergency land the drone")
             self.bebop.safe_land(5)
             self.bebop.disconnect()
-        finally:
-            print("Error in Arrive class")
+            os._exit(1)
     
     def pause(self):
         self.stopped = True
