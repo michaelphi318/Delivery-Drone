@@ -450,7 +450,6 @@ class Bebop():
         while (not self.sensors.RelativeMoveEnded):
             if self.loop_breaker:
                 break
-            
             self.smart_sleep(0.01)
 
     def cancel_move_relative(self):
