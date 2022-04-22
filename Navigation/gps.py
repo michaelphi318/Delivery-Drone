@@ -1,12 +1,15 @@
+from inspect import trace
 from pyparrot.Bebop import Bebop
 from threading import Thread
 from math import radians, cos, sin, asin, atan, sqrt, pi
+from logger import *
+import sys, os, time, traceback
 
 
 class GPS(Thread):
     def __init__(self, bebop, lat, lon):
         super().__init__()
-        self.daemon = True
+        self.terminate = False
         if isinstance(bebop, Bebop):
             self.bebop = bebop
         self.coords = [[0.0, 0.0, 0.0] for i in range(3)] 
@@ -70,11 +73,23 @@ class GPS(Thread):
         return diff_radians
 
     def run(self):
-        while True:
-            lat = self.bebop.sensors.sensors_dict["GpsLocationChanged_latitude"]
-            lon = self.bebop.sensors.sensors_dict["GpsLocationChanged_longitude"]
-            alt = self.bebop.sensors.sensors_dict["GpsLocationChanged_altitude"]
-        
-            if (self.coords[2][0] != lat):
-                self.coords.append([lat, lon, alt])
-                self.coords.pop(0)
+        try:
+            while True:
+                if self.terminate:
+                    break
+                
+                lat = self.bebop.sensors.sensors_dict["GpsLocationChanged_latitude"]
+                lon = self.bebop.sensors.sensors_dict["GpsLocationChanged_longitude"]
+                alt = self.bebop.sensors.sensors_dict["GpsLocationChanged_altitude"]
+            
+                if (self.coords[2][0] != lat):
+                    self.coords.append([lat, lon, alt])
+                    self.coords.pop(0)
+        except:
+            traceback.print_exc()
+            print()
+            # print("\nEmergency land the drone")
+            self.bebop.safe_land(5)
+            self.bebop.disconnect()
+        finally:
+            print("Error in GPS class")
