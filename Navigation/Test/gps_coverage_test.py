@@ -19,6 +19,7 @@ def gps():
     
         if lat == 500 or lon == 500 or alt == 500:
             print("GPS is 500, issue e command to land the drone (recommend)")
+            break
 
 if __name__ == "__main__":
     #connects the ctrl+C interrupt to the function

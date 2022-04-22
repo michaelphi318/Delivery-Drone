@@ -1,11 +1,10 @@
 from pyparrot.Bebop import Bebop
 from math import radians, cos, sin, asin, atan, sqrt, pi
-import signal
-import sys
+import sys, signal, time
 
 
-LATITUDE_DESTINATION = 39.95556735277928
-LONGITUDE_DESTINATION = -75.18637974722172
+LATITUDE_DESTINATION = 39.96146358055568
+LONGITUDE_DESTINATION = -75.18767252222263
 #LATITUDE_ORIGIN = 0
 #LONGTITUDE_ORIGIN = 0
 
@@ -14,6 +13,13 @@ def handler(signum, frame):
     print("Emergency landing protocol - disconnecting")
     bebop.disconnect()
     sys.exit(1)
+
+def calibrate():
+    # flat trim 
+    start_time = time.time()
+    bebop.flat_trim(0)
+    end_time = time.time()
+    print("Flat trim finished after %.2f" % (end_time - start_time))
 
 def distanceGPS(lat1, lon1, lat2, lon2):
     # convert from degree to radians
@@ -153,12 +159,7 @@ if __name__ == "__main__":
     # print("Sleeping")
     bebop.smart_sleep(1)
 
-    # print battery
-    # print("Battery : "+str(bebop.sensors.battery))
-    # bebop.smart_sleep(2)
-
-    # set bebop current speed for fly_direct
-    # test api changes
+    calibrate()
     
     print("Take off\n")
     bebop.safe_takeoff(10)
