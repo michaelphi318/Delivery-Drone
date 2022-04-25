@@ -1,5 +1,6 @@
 from pyparrot.Bebop import Bebop
 from threading import Thread, Condition
+from math import pi
 from sensor import *
 import sys, os, time, traceback
 
@@ -15,24 +16,27 @@ class Avoidance(Thread):
         self.navi = NavigationSensor(self.bebop)
 
     def turnRight(self):
-        print("Turn right")
-        # TODO
+        while self.navi.isAvoidanceTriggered:
+            print("Turn right 10 degrees")
+            self.bebop.move_relative(0, 0, 0, 10 * pi / 180)
     
     def turnLeft(self):
-        print("Turn left")
-        # TODO
+        while self.navi.isAvoidanceTriggered:
+            print("Turn left 10 degrees")
+            self.bebop.move_relative(0, 0, 0, -10 * pi / 180)
 
     def moveForward(self):
-        print("Move forward")
-        # TODO
+        self.bebop.move_relative(1, 0, 0, 0)
 
     def moveUp(self):
-        print("Move up")
-        # TODO
+        while self.navi.isAvoidanceTriggered:
+            print("Move up")
+            self.bebop.move_relative(0, 0, -1, 0)
     
     def moveDown(self):
-        print("Move down")
-        # TODO
+        while self.navi.isAvoidanceTriggered:
+            print("Move down")
+            self.bebop.move_relative(0, 0, 0.5, 0)
 
     def run(self):
         try:

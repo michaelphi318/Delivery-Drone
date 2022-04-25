@@ -66,7 +66,7 @@ class NavigationSensor(Thread):
             os._exit(1)
 
 
-# if __name__ == "__main__":
-#     navi = NavigationSensor()
-#     navi.start()
-#     navi.join()
+if __name__ == "__main__":
+    navi = NavigationSensor()
+    navi.start()
+    navi.join()
