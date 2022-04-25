@@ -1,5 +1,6 @@
 from pyparrot.Bebop import Bebop
 from threading import Thread, Condition
+from sensor import *
 import sys, os, time, traceback
 
 
@@ -8,36 +9,41 @@ class Avoidance(Thread):
         super().__init__()
         if isinstance(bebop, Bebop):
             self.bebop = bebop
-        self.stopped = True
-        self.terminate = False
+        self.isPaused = True
+        self.isTerminated = False
         self.condition = Condition()
+        self.navi = NavigationSensor(self.bebop)
 
     def turnRight(self):
         print("Turn right")
+        # TODO
     
     def turnLeft(self):
         print("Turn left")
+        # TODO
 
     def moveForward(self):
         print("Move forward")
+        # TODO
 
-    def moveUP(self):
+    def moveUp(self):
         print("Move up")
+        # TODO
+    
+    def moveDown(self):
+        print("Move down")
+        # TODO
 
     def run(self):
         try:
-            while True:
+            self.bebop.loop_breaker = True
+
+            while not self.isTerminated:
                 with self.condition:
-                    if self.stopped:
+                    if self.isPaused:
                         self.condition.wait()
-            
-                if self.terminate:
-                    break
                 
-                print("\nStop Flying\n")
-                self.bebop.loop_breaker = True
                 self.bebop.cancel_move_relative()
-                self.bebop.loop_breaker = False
             
             print("Avoidance thread done\n")
         except:
@@ -49,9 +55,9 @@ class Avoidance(Thread):
             os._exit(1)
     
     def pause(self):
-        self.stopped = True
+        self.isPaused = True
 
     def resume(self):
         with self.condition:
-            self.stopped = False
+            self.isPaused = False
             self.condition.notify()

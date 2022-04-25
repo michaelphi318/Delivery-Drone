@@ -10,11 +10,11 @@ class Arrive(Thread):
         super().__init__()
         if isinstance(bebop, Bebop):
             self.bebop = bebop
-        self.stopped = True
-        self.terminate = False
+        self.isPaused = True
+        self.isTerminated = False
         self.condition = Condition()
         self.gps = GPS(self.bebop, lat, lon)
-        self.distance = 1000
+        self.distance = 0.0
     
     def run(self):
         def checkMove():
@@ -77,9 +77,9 @@ class Arrive(Thread):
             #-----------------------------------------------------------------------------------------------------
 
             #--------------------------------------Fly to destination---------------------------------------------
-            while(self.distance > 0.25):
+            while self.distance > 0.25:
                 with self.condition:
-                    if self.stopped:
+                    if self.isPaused:
                         self.condition.wait()
 
                 if self.distance > 10:
@@ -141,9 +141,9 @@ class Arrive(Thread):
             os._exit(1)
     
     def pause(self):
-        self.stopped = True
+        self.isPaused = True
 
     def resume(self):
         with self.condition:
-            self.stopped = False
+            self.isPaused = False
             self.condition.notify()

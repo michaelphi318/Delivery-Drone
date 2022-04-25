@@ -7,9 +7,9 @@ import sys, os, time, traceback
 class GPS(Thread):
     def __init__(self, bebop, lat, lon):
         super().__init__()
-        self.terminate = False
         if isinstance(bebop, Bebop):
             self.bebop = bebop
+        self.isTerminated = False
         self.coords = [[0.0, 0.0, 0.0] for i in range(3)] 
         self.latitude_destination = lat
         self.longitude_destination = lon
@@ -72,10 +72,7 @@ class GPS(Thread):
 
     def run(self):
         try:
-            while True:
-                if self.terminate:
-                    break
-                
+            while not self.isTerminated:
                 lat = self.bebop.sensors.sensors_dict["GpsLocationChanged_latitude"]
                 lon = self.bebop.sensors.sensors_dict["GpsLocationChanged_longitude"]
                 alt = self.bebop.sensors.sensors_dict["GpsLocationChanged_altitude"]
