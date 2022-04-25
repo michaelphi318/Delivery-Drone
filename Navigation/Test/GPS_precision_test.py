@@ -3,16 +3,31 @@ import sys, os, time
 import signal
 
 def handler(signum, frame):
-    bebop.safe_land(10)
-    print("Emergency landing protocol - disconnecting")
+    # bebop.safe_land(10)
+    # print("Emergency landing protocol - disconnecting")
     bebop.disconnect()
     sys.exit(1)
 
-def writeFile():
-    f = open(os.path.dirname(__file__) + "/../gps.txt", "w")
+def writeFile(mode, Lat_avg, Lon_avg, Alt_avg):
+    f = open(os.path.dirname(__file__) + "/../gps.txt", mode)
     f.writelines([str(Lat_avg) + "\n", str(Lon_avg) + "\n", str(Alt_avg)])
-    f.close()
     print("File written")
+    f.close()
+
+def connect():
+    print("Connecting to the drone\n")
+    success = bebop.connect(5)
+
+    if not success:
+        print("Connection failed")
+        sys.exit(1)
+            
+    bebop.smart_sleep(2)
+
+def disconnect():
+    print("DONE - disconnecting")
+    bebop.disconnect()
+    sys.exit(0)
 
 def calibrate():
     # flat trim 
@@ -21,26 +36,7 @@ def calibrate():
     end_time = time.time()
     print("Flat trim finished after %.2f" % (end_time - start_time))
 
-if __name__ == "__main__":
-    signal.signal(signal.SIGINT, handler)
-
-    bebop = Bebop()
-    print("connecting")
-    success = bebop.connect(10)
-    bebop.smart_sleep(1)
-    print(success)
-
-    # print("Take off\n")
-    # bebop.safe_takeoff(5)
-
-    # print("Sleeping")
-    bebop.smart_sleep(1)
-
-    calibrate()
-
-    #bebop.fly_direct(roll=0, pitch=0, yaw=0, vertical_movement=100, duration=0.75)
-    # bebop.move_relative(0, 0, -2, 0)
-        
+def precisionTest():
     Lat_min = 2000
     Lat_max = -2000
     Lon_min = 2000
@@ -81,20 +77,39 @@ if __name__ == "__main__":
     Lat_precision = (Lat_max - Lat_min) * 364000
     Lon_precision = (Lon_max - Lon_min) * 288200
     Alt_precision = (Alt_max - Alt_min) * 3.28084
-    print("Latitude Precision: " + str(Lat_precision) + " feet")
-    print("Longitdue Precision: " + str(Lon_precision) + " feet")
-    print("Altitude Precision: " + str(Alt_precision) + " feet")
-
     Lat_avg = Lat_sum/60
     Lon_avg = Lon_sum/60
     Alt_avg = Alt_sum/60
+    print("Latitude Precision: " + str(Lat_precision) + " feet")
+    print("Longitdue Precision: " + str(Lon_precision) + " feet")
+    print("Altitude Precision: " + str(Alt_precision) + " feet")
     print("Latitude Average: " + str(Lat_avg) + " feet")
     print("Longitdue Average: " + str(Lon_avg) + " feet")
     print("Altitude Average: " + str(Alt_avg) + " feet")
 
+    return Lat_avg, Lon_avg
+
+def disconnect():
     print("DONE - disconnecting")
     bebop.safe_land(2)
     bebop.disconnect()
 
-    # write lat, lon, and alt to gps.txt
-    writeFile()
+
+if __name__ == "__main__":
+    signal.signal(signal.SIGINT, handler)
+    bebop = Bebop()
+    lat = lon = alt = 0.0
+    
+    connect()
+    calibrate()
+
+    # GPS for destination
+    lat, lon, alt = precisionTest()
+    writeFile("w", lat, lon)
+
+    # GPS for origin (uncomment to use)
+    # time.sleep(30)
+    # lat, lon, alt = precisionTest()
+    # writeFile("a", lat, lon)
+
+    disconnect()
