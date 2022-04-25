@@ -100,12 +100,20 @@ class Arrive(Thread):
                 
                 diff_radians = self.gps.diffRadians(lat, lon, prevLat, prevLon)
 
+                with self.condition:
+                    if self.isPaused:
+                        self.condition.wait()
+
                 if abs(diff_radians) > 5 * pi / 180:
                     print("Rotating\n")
                     self.bebop.smart_sleep(0.1)
                     self.bebop.move_relative(0, 0, 0, -diff_radians)
                     # checkMove()
                 
+                with self.condition:
+                    if self.isPaused:
+                        self.condition.wait()
+
                 print("Going forward\n")
                 #bebop.fly_direct(roll=0, pitch=p, yaw=0, vertical_movement=0, duration=0.5)
                 self.bebop.move_relative(v, 0, 0, 0)
