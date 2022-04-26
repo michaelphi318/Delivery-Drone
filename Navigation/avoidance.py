@@ -1,7 +1,7 @@
 from pyparrot.Bebop import Bebop
 from threading import Thread, Condition
 from math import pi
-from sensor import *
+from sensor import NavigationSensor
 import sys, os, time, traceback
 
 

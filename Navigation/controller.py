@@ -1,11 +1,11 @@
 from pyparrot.Bebop import Bebop
 from threading import Thread
 from pynput.keyboard import Key, KeyCode, Listener
-from arrive import *
-from gps import *
-from avoidance import *
-from sensor import *
-from logger import *
+from arrive import Arrive
+from gps import GPS
+from avoidance import Avoidance
+from sensor import NavigationSensor
+from logger import Logger
 import sys, os, time, datetime, traceback
 
 
