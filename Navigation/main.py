@@ -1,5 +1,5 @@
 from controller import DroneController
-from Navigation.logger import Logger
+from logger import Logger
 import sys, os, datetime
 
 
