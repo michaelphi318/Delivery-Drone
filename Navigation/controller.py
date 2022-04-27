@@ -1,16 +1,14 @@
 from pyparrot.Bebop import Bebop
-from threading import Thread
 from pynput.keyboard import Key, KeyCode, Listener
 from arrive import Arrive
 from gps import GPS
 from avoidance import Avoidance
 from sensor import NavigationSensor
-from logger import Logger
-import sys, os, time, datetime, traceback
+import sys, os, time, traceback
 
 
 class DroneController():
-    def __inint__(self):
+    def __init__(self):
         self.lat, self.lon = self.readGPSFromFile()
         self.bebop = Bebop()
         self.arriveThread = Arrive(self.bebop, self.lat, self.lon)
@@ -48,9 +46,10 @@ class DroneController():
         start_time = time.time()
         self.bebop.flat_trim(0)
         end_time = time.time()
-        print("Flat trim finished after %.2f" % (end_time - start_time))
+        print("Calibrate finished after %.2f\n" % (end_time - start_time))
 
     def droneTakeOff(self):
+        print("Take off")
         self.bebop.safe_takeoff(10)
 
     def droneAutonomousControl(self):
@@ -68,7 +67,7 @@ class DroneController():
                     self.avoidanceThread.resume()
 
                     # For upper sensor if equipped
-                    # change if case in self.cases.keys(): to elif if upper sensor is equipped
+                    # change (if case in self.cases.keys():) to (elif) if upper sensor is equipped
                     # if self.avoidanceThread.navi.sensors[3] < self.avoidanceThread.navi.distanceThreshold:
                     #     self.avoidanceThread.moveUp()
 

@@ -12,6 +12,6 @@ if __name__ == "__main__":
     print(datetime.date.today().strftime("\n\n%d/%m/%Y"))
     print(datetime.datetime.now().strftime("%H:%M:%S"))
     bebopController.droneConnect()
-    bebopController.droneCalibrate
+    bebopController.droneCalibrate()
     bebopController.droneTakeOff()
     bebopController.droneAutonomousControl()

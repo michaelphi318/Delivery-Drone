@@ -14,17 +14,16 @@ class Arrive(Thread):
         self.isTerminated = False
         self.condition = Condition()
         self.gps = GPS(self.bebop, lat, lon)
-        self.distance = 0.0
+        self.distance = 1000.0
     
     def run(self):
-        def checkMove():
+        def checkMove(v):
             for i in range(len(self.gps.coords)):
                 if self.gps.coords[i][0] == 500:
-                    self.bebop.loop_breaker = True
-                    self.bebop.cancel_move_relative()
-                    print("GPS is bad, switch to fly_direct")
+                    print("GPS is bad")
                     print("Going foward\n")
                     self.bebop.fly_direct(roll=0, pitch=75, yaw=0, vertical_movement=0, duration=0.25)
+            self.bebop.move_relative(v, 0, 0, 0)
 
         p = 100
         v = 2
@@ -37,7 +36,6 @@ class Arrive(Thread):
             #------------------------------------Fly the drone foward-----------------------------------------
             print("Fly up 1m\n")
             self.bebop.move_relative(0, 0, -1, 0)
-            checkMove()
             
             # bebop.smart_sleep(0.2)
 
@@ -57,12 +55,12 @@ class Arrive(Thread):
             prevLon = lon
             
             print("Going forward to check for angle\n")
-            self.bebop.move_relative(2, 0, 0, 0)
-            checkMove()
+            # self.bebop.move_relative(2, 0, 0, 0)
+            checkMove(2)
             # bebop.smart_sleep(1)
             
-            while(self.gps.avgGPS() == lat):
-                continue
+            # while(self.gps.avgGPS() == lat):
+            #     continue
 
             # lat = (self.gps.coords[0][0] + self.gps.coords[1][0] + self.gps.coords[2][0]) / 3
             # lon = (self.gps.coords[0][1] + self.gps.coords[1][1] + self.gps.coords[2][1]) / 3
@@ -116,8 +114,8 @@ class Arrive(Thread):
 
                 print("Going forward\n")
                 #bebop.fly_direct(roll=0, pitch=p, yaw=0, vertical_movement=0, duration=0.5)
-                self.bebop.move_relative(v, 0, 0, 0)
-                checkMove()
+                # self.bebop.move_relative(v, 0, 0, 0)
+                checkMove(v)
                 # bebop.smart_sleep(0.5)
                 
                 prevLat = lat
