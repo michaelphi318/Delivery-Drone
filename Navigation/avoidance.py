@@ -19,14 +19,29 @@ class Avoidance(Thread):
         while self.navi.isAvoidanceTriggered:
             print("Turn right 10 degrees")
             self.bebop.move_relative(0, 0, 0, 10 * pi / 180)
+            time.sleep(0.1)
+        
+        time.sleep(5)
+        
+        if self.navi.isAvoidanceTriggered:
+            self.turnRight()
     
     def turnLeft(self):
         while self.navi.isAvoidanceTriggered:
             print("Turn left 10 degrees")
             self.bebop.move_relative(0, 0, 0, -10 * pi / 180)
+            time.sleep(0.1)
+        
+        time.sleep(5)
+
+        if self.navi.isAvoidanceTriggered:
+            self.turnLeft()
 
     def moveForward(self):
-        self.bebop.move_relative(1, 0, 0, 0)
+        if self.navi.isAvoidanceTriggered:
+            print("Not clear to move forward")
+        else:
+            self.bebop.move_relative(1, 0, 0, 0)
 
     def moveUp(self):
         while self.navi.isAvoidanceTriggered:

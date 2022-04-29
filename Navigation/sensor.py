@@ -7,6 +7,10 @@ import sys, os, time, traceback
 
 
 class NavigationSensor(Thread):
+    '''
+    
+    '''
+    
     def __init__(self, bebop):
         super().__init__()
         if isinstance(bebop, Bebop):
