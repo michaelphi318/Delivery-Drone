@@ -48,7 +48,7 @@ class NavigationSensor(Thread):
                             uart_connection = ble.connect(adv)
                             print("Connected")
                             break
-                    
+                
                     ble.stop_scan()
 
                 if uart_connection and uart_connection.connected:
@@ -59,6 +59,7 @@ class NavigationSensor(Thread):
 
                         if data:
                             self.sensors = list(map(int, data.split(',')))
+                        print(uart_service.readline().decode("utf-8").rstrip())
                         
                         self.setAvoidanceTrigger()
         except:
@@ -71,6 +72,6 @@ class NavigationSensor(Thread):
 
 
 if __name__ == "__main__":
-    navi = NavigationSensor()
+    navi = NavigationSensor(Bebop())
     navi.start()
     navi.join()

@@ -101,5 +101,5 @@ while True:
                 trigger = True
             if x is not None and not trigger:
                 #print(b"%.3f,%.3f,%.3f\n" % (left, right, front))
-                uart.write(b"%d,%d,%d\n" % (left, right, front))
+                uart.write(b"%d,%d,%d,%d\n" % (left, right, front))
                 #uart.write(b"%d\n" % (sonar.distance))
