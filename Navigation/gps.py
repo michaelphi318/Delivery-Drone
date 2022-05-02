@@ -77,7 +77,8 @@ class GPS(Thread):
                 lon = self.bebop.sensors.sensors_dict["GpsLocationChanged_longitude"]
                 alt = self.bebop.sensors.sensors_dict["GpsLocationChanged_altitude"]
             
-                if self.coords[2][0] != lat and self.coords[2][1] != lon and self.coords[2][2]:
+                if self.coords[2][0] != lat and self.coords[2][1] != lon and self.coords[2][2] != alt:
+                # if self.coords[2][0] != lat:
                     self.coords.append([lat, lon, alt])
                     self.coords.pop(0)
             
@@ -89,3 +90,10 @@ class GPS(Thread):
             self.bebop.safe_land(5)
             self.bebop.disconnect()
             os._exit(1)
+
+if __name__ == "__main__":
+    gps = GPS()
+    gps.start()
+    gps.isTerminated = True
+    gps.join()
+    print("GPS thread terminated")

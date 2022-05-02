@@ -87,7 +87,7 @@ def precisionTest():
     print("Longitdue Average: " + str(Lon_avg) + " feet")
     print("Altitude Average: " + str(Alt_avg) + " feet")
 
-    return Lat_avg, Lon_avg
+    return Lat_avg, Lon_avg, Alt_avg
 
 def disconnect():
     print("DONE - disconnecting")
@@ -105,7 +105,7 @@ if __name__ == "__main__":
 
     # GPS for destination
     lat, lon, alt = precisionTest()
-    writeFile("w", lat, lon)
+    writeFile("w", lat, lon, alt)
 
     # GPS for origin (uncomment to use)
     # time.sleep(30)

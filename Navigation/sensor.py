@@ -3,7 +3,7 @@ from threading import Thread
 from adafruit_ble import BLERadio
 from adafruit_ble.advertising.standard import ProvideServicesAdvertisement
 from adafruit_ble.services.nordic import UARTService
-import sys, os, time, traceback
+import sys, os, time, traceback, copy
 
 
 class NavigationSensor(Thread):
@@ -16,7 +16,7 @@ class NavigationSensor(Thread):
         if isinstance(bebop, Bebop):
             self.bebop = bebop
         self.isTerminated = False
-        self.sensors = []
+        self.sensors = [0.0 for i in range(4)]
         self.distanceThreshold = 60
         self.isAvoidanceTriggered = False
 
@@ -32,7 +32,9 @@ class NavigationSensor(Thread):
         return res
     
     def setAvoidanceTrigger(self):
-        self.isAvoidanceTriggered = any(i < self.distanceThreshold for i in self.sensors)
+        # shallow copy is also fine
+        temp = copy.deepcopy(self.sensors[:3])
+        self.isAvoidanceTriggered = any(i < self.distanceThreshold for i in temp)
 
     def run(self):
         try:
@@ -59,7 +61,8 @@ class NavigationSensor(Thread):
 
                         if data:
                             self.sensors = list(map(int, data.split(',')))
-                        print(uart_service.readline().decode("utf-8").rstrip())
+                            # print(self.sensors)
+                        # print(uart_service.readline().decode("utf-8").rstrip())
                         
                         self.setAvoidanceTrigger()
         except:
@@ -74,4 +77,6 @@ class NavigationSensor(Thread):
 if __name__ == "__main__":
     navi = NavigationSensor(Bebop())
     navi.start()
+    navi.isTerminated = True
     navi.join()
+    print("NaviSensor thread is terminated")

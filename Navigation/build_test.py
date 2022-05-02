@@ -9,33 +9,6 @@ from logger import *
 import sys, os, time, datetime, traceback
 
 
-def userInput():
-    global stop
-
-    while True:
-        command = input().lower()
-
-        #-----------------------------------
-        # q = emergengy land
-        # p = Arrive pause, Avoidance resume
-        # r = Arrive resume, Avoidance pause
-        # b = break the thread
-        #-----------------------------------
-
-        if command == "q":
-            bebop.safe_land(10)
-            print("Emergency landing protocol - disconnecting")
-            bebop.disconnect()
-            os._exit(1)
-        elif command == "p":
-            stop = True
-        elif command == "r":
-            stop = False
-        elif command == "b":
-            break
-        else:
-            continue
-
 def on_press(key):
     # print('{0} pressed'.format(key))
     pass
@@ -75,33 +48,32 @@ def test():
     #----------------------------------------------------------
 
     try:
-        # inputThread.start()
         with Listener(on_press=on_press, on_release=on_release) as listener:
             for thread in threads:
-                if isinstance(thread, (Arrive, GPS, Avoidance)):
-                    thread.start()
+                # if isinstance(thread, (Arrive, GPS, Avoidance)):
+                thread.start()
             
             while arriveThread.distance > 0.25:
                 if stop:
                     print("Flying Stop\n")
                     arriveThread.pause()
                     avoidanceThread.resume()
+                    avoidanceThread.pause()
                 else:
-                    print("Flying Resume\n")
+                    # print("Flying Resume\n")
                     arriveThread.resume()
                     avoidanceThread.pause()
             
             print("While loop exited (main)\n")
 
             for thread in threads:
-                if isinstance(thread, (Arrive, GPS, Avoidance)):
-                    thread.terminate = True
-                    thread.join()
-                    print("Thread %s terminated\n" % (thread.__class__.__name__))
+                # if isinstance(thread, (Arrive, GPS, Avoidance)):
+                thread.isTerminated = True
+                thread.join()
+                print("Thread %s terminated\n" % (thread.__class__.__name__))
 
             listener.join()
             sys.exit(0)
-        # inputThread.join()
     except:
         print("Error in Main thread\n")
         traceback.print_exc()

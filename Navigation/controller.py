@@ -162,51 +162,68 @@ class DroneController():
         ----------------------------------------------------------------------------------------------
         '''
         
+        def on_press(key):
+            # print('{0} pressed'.format(key))
+            pass
+
+        def on_release(key):
+            # print('{0} release'.format(key))
+            if key == Key.esc:
+                return False
+            elif key == KeyCode.from_char("q"):
+                self.bebop.safe_land(10)
+                print("Emergeny landing protocol - disconnecting")
+                self.bebop.disconnect()
+                os._exit(1)
+
         try:
-            # Start all the threads
-            for thread in self.threads:
-                if isinstance(thread, (Arrive, GPS, Avoidance, NavigationSensor)):
+            with Listener(on_press=on_press, on_release=on_release) as listener:
+
+                # Start all the threads
+                for thread in self.threads:
+                    # if isinstance(thread, (Arrive, GPS, Avoidance, NavigationSensor)):
                     thread.start()
 
-            # Loop til distance is reached
-            while self.arriveThread.distance > 0.25:
-                # object detected
-                if self.avoidanceThread.navi.isAvoidanceTriggered:
-                    case = self.avoidanceThread.navi.getAvoidanceCase()
+                # Loop til distance is reached
+                while self.arriveThread.distance > 0.25:
+                    # object detected
+                    if self.avoidanceThread.navi.isAvoidanceTriggered or self.avoidanceThread.navi.sensors[3] < self.avoidanceThread.navi.distanceThreshold:
+                        case = self.avoidanceThread.navi.getAvoidanceCase()
 
-                    print("Flying stop\n")
-                    self.arriveThread.pause()
-                    self.avoidanceThread.resume()
+                        print("Flying stop\n")
+                        self.arriveThread.pause()
+                        self.avoidanceThread.resume()
 
-                    # For upper sensor if equipped
-                    # change (if case in self.cases.keys():) to (elif) if upper sensor is equipped
-                    # if self.avoidanceThread.navi.sensors[3] < self.avoidanceThread.navi.distanceThreshold:
-                    #     self.avoidanceThread.moveUp()
+                        # For upper sensor
+                        if self.avoidanceThread.navi.sensors[3] < self.avoidanceThread.navi.distanceThreshold:
+                            self.avoidanceThread.pause()
+                            self.avoidanceThread.moveUp()
 
-                    # case in dictionary
-                    if case in self.cases.keys():
-                        self.avoidanceThread.pause()
+                        # case in dictionary
+                        elif case in self.cases.keys():
+                            self.avoidanceThread.pause()
 
-                        for command in self.cases.get(case):
-                            command()
+                            for command in self.cases.get(case):
+                                command()
+                        
+                        # case not in dictionary, which should not happen
+                        else:
+                            raise ValueError("Avoidance case not in dict\n")
                     
-                    # case not in dictionary, which should not happen
+                    # object not detected
                     else:
-                        raise ValueError("Avoidance case not in dict\n")
+                        self.arriveThread.resume()
+                        self.avoidanceThread.pause()
                 
-                # object not detected
-                else:
-                    self.arriveThread.resume()
-                    self.avoidanceThread.pause()
-            
-            # join all the threads
-            for thread in self.threads:
-                if isinstance(thread, (Arrive, GPS, Avoidance, NavigationSensor)):
+                # join all the threads
+                for thread in self.threads:
+                    # if isinstance(thread, (Arrive, GPS, Avoidance, NavigationSensor)):
                     thread.isTerminated = True
                     thread.join()
                     print("Thread %s terminated" % (thread.__class__.__name__))
 
-            sys.exit(0)
+                listener.join()
+                sys.exit(0)
         
         # Land the drone and quit the program if any exception occurs
         except:

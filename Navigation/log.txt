@@ -568,3 +568,30 @@ Making a browser for _arsdk-090c._udp.local.
 [38;5;196m connection failed: did you remember to connect your machine to the Drone's wifi network? [0m
 Connection failed
 
+
+
+01/05/2022
+10:52:49
+
+Connecting to the drone
+
+Setting up mDNS listener since this is not a Mambo
+Making a browser for _arsdk-090c._udp.local.
+Service Bebop2-017421._arsdk-090c._udp.local. added, service info: ServiceInfo(type='_arsdk-090c._udp.local.', name='Bebop2-017421._arsdk-090c._udp.local.', address=b'\xc0\xa8*\x01', port=44444, weight=0, priority=0, server='Bebop2-017421.local.', properties={b'{"device_id":"PI040384AA5K017421"}': False})
+{"d2c_port": 43210, "controller_type": "computer", "controller_name": "pyparrot", "arstream2_client_stream_port": 55004, "arstream2_client_control_port": 55005}
+[38;5;196m Error: TCP handshake failed. [0m
+Connection failed
+
+
+
+01/05/2022
+10:53:16
+
+Connecting to the drone
+
+Setting up mDNS listener since this is not a Mambo
+Making a browser for _arsdk-090c._udp.local.
+Service Bebop2-017421._arsdk-090c._udp.local. added, service info: ServiceInfo(type='_arsdk-090c._udp.local.', name='Bebop2-017421._arsdk-090c._udp.local.', address=b'\xc0\xa8*\x01', port=44444, weight=0, priority=0, server='Bebop2-017421.local.', properties={b'{"device_id":"PI040384AA5K017421"}': False})
+{"d2c_port": 43210, "controller_type": "computer", "controller_name": "pyparrot", "arstream2_client_stream_port": 55004, "arstream2_client_control_port": 55005}
+[38;5;196m Error: TCP handshake failed. [0m
+Connection failed

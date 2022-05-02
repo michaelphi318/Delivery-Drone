@@ -3,8 +3,8 @@ from math import radians, cos, sin, asin, atan, sqrt, pi
 import sys, signal, time
 
 
-LATITUDE_DESTINATION = 39.96146358055568
-LONGITUDE_DESTINATION = -75.18767252222263
+LATITUDE_DESTINATION = 39.96124848889167
+LONGITUDE_DESTINATION = -75.18744017221785
 #LATITUDE_ORIGIN = 0
 #LONGTITUDE_ORIGIN = 0
 
@@ -214,7 +214,7 @@ if __name__ == "__main__":
             v = 4
         elif d <= 3 and d > 1:
             p = 25
-            v = 1.5
+            v = 2
         elif d < 1 and d > 0.5:
             p = 10
             v = 0.75
