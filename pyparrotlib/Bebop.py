@@ -449,13 +449,14 @@ class Bebop():
         # sleep until it ends
         while (not self.sensors.RelativeMoveEnded):
             if self.loop_breaker:
+                self.move_relative(-1, 0, 0, 0)
                 break
+        
             self.smart_sleep(0.01)
 
     def cancel_move_relative(self):
         command_tuple = self.command_parser.get_command_tuple("ardrone3", "Piloting", "CancelMoveBy")
-        self.drone_connection.send_noparam_high_priority_command_packet(command_tuple)
-
+        return self.drone_connection.send_noparam_high_priority_command_packet(command_tuple)
         # while (not self.sensors.RelativeMoveEnded):
         #     self.smart_sleep(0.01)
 

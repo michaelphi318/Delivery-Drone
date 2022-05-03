@@ -17,8 +17,8 @@ class Avoidance(Thread):
         self.navi = NavigationSensor(self.bebop)
 
     def turnRight(self):
-        while self.navi.isAvoidanceTriggered:
-            print("Turn right 10 degrees")
+        # while self.navi.isAvoidanceTriggered:
+        print("Turn right 10 degrees")
         #     self.bebop.move_relative(0, 0, 0, 10 * pi / 180)
         #     time.sleep(0.1)
         
@@ -28,8 +28,8 @@ class Avoidance(Thread):
         #     self.turnRight()
     
     def turnLeft(self):
-        while self.navi.isAvoidanceTriggered:
-            print("Turn left 10 degrees")
+        # while self.navi.isAvoidanceTriggered:
+        print("Turn left 10 degrees")
         #     self.bebop.move_relative(0, 0, 0, -10 * pi / 180)
         #     time.sleep(0.1)
         
@@ -39,20 +39,20 @@ class Avoidance(Thread):
         #     self.turnLeft()
 
     def moveForward(self):
-        if self.navi.isAvoidanceTriggered:
-            print("Not clear to move forward")
-        else:
-            print("Move Forward")
-            self.bebop.move_relative(1, 0, 0, 0)
+        # if self.navi.isAvoidanceTriggered:
+        #     print("Not clear to move forward")
+        # else:
+        print("Move Forward")
+            # self.bebop.move_relative(1, 0, 0, 0)
 
     def moveUp(self):
-        while self.navi.isAvoidanceTriggered:
-            print("Move up")
+        # while self.navi.isAvoidanceTriggered:
+        print("Move up")
             # self.bebop.move_relative(0, 0, -1, 0)
     
     def moveDown(self):
-        while self.navi.isAvoidanceTriggered:
-            print("Move down")
+        # while self.navi.isAvoidanceTriggered:
+        print("Move down")
             # self.bebop.move_relative(0, 0, 0.5, 0)
 
     def run(self):
@@ -63,8 +63,8 @@ class Avoidance(Thread):
                         self.condition.wait()
 
                 self.bebop.loop_breaker = True
-                self.bebop.cancel_move_relative()
-                self.bebop.loop_breaker = False
+                # print("Cancel move relative")
+                # self.bebop.cancel_move_relative()
             
             print("Avoidance thread done\n")
         except:
@@ -86,8 +86,9 @@ class Avoidance(Thread):
 
 if __name__ == "__main__":
     path = os.path.dirname(os.path.realpath(__file__)) + "/log.txt"
-    sys.stdout = Logger(path)
-    sys.stderr = sys.stdout
+    # sys.stdout = Logger(path)
+    # sys.stderr = sys.stdout
+    sys.stderr = Logger(path)
     avoidanceThread = Avoidance(Bebop())
     cases = {"000" : [avoidanceThread.moveDown], 
                 "001" : [avoidanceThread.turnRight, avoidanceThread.moveForward],
@@ -100,20 +101,23 @@ if __name__ == "__main__":
 
     print(datetime.date.today().strftime("\n\n%d/%m/%Y"))
     print(datetime.datetime.now().strftime("%H:%M:%S"))
+    avoidanceThread.navi.start()
 
     while True:
-        if avoidanceThread.navi.isAvoidanceTriggered or avoidanceThread.navi.sensors[3] < avoidanceThread.navi.distanceThreshold:
-            case = avoidanceThread.navi.getAvoidanceCase()
-            print("Case %s" % case)
+        time.sleep(5)
+        print(avoidanceThread.navi.sensors)
+        case = avoidanceThread.navi.getAvoidanceCase()
+        print("Case %s" % case)
 
-            if avoidanceThread.navi.sensors[3] < avoidanceThread.navi.distanceThreshold:
-                avoidanceThread.moveUp()
-                print("Done\n")
-            elif case in cases.keys():
+        if avoidanceThread.navi.sensors[3] < avoidanceThread.navi.distanceThreshold and avoidanceThread.navi.isAvoidanceTriggered:
+            if case in cases.keys():
                 for command in cases.get(case):
                     command()
                 print("Done\n")
             else:
-                print("Case not in dictionary\n")
-        else:
-            print("No objec detected")
+                print("Case not in dictionary")
+        elif avoidanceThread.navi.sensors[3] < avoidanceThread.navi.distanceThreshold and not avoidanceThread.navi.isAvoidanceTriggered:
+            avoidanceThread.moveDown()
+            print("Done\n")
+        elif avoidanceThread.navi.sensors[3] > avoidanceThread.navi.distanceThreshold:
+            avoidanceThread.moveUp()

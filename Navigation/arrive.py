@@ -82,7 +82,7 @@ class Arrive(Thread):
                 with self.condition:
                     if self.isPaused:
                         self.condition.wait()
-
+                # self.bebop.loop_breaker = False
                 if self.distance > 10:
                     p = 100
                     v = 8
@@ -104,7 +104,7 @@ class Arrive(Thread):
                 with self.condition:
                     if self.isPaused:
                         self.condition.wait()
-
+                # self.bebop.loop_breaker = False
                 if abs(diff_radians) > 5 * pi / 180:
                     print("Rotating\n")
                     self.bebop.smart_sleep(0.1)
@@ -114,7 +114,7 @@ class Arrive(Thread):
                 with self.condition:
                     if self.isPaused:
                         self.condition.wait()
-
+                # self.bebop.loop_breaker = False
                 print("Going forward\n")
                 #bebop.fly_direct(roll=0, pitch=p, yaw=0, vertical_movement=0, duration=0.5)
                 self.bebop.move_relative(v, 0, 0, 0)

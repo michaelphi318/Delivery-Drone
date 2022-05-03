@@ -43,7 +43,6 @@ def test():
     lat, lon = readGPSFromFile()
     arriveThread = Arrive(bebop, lat, lon)
     avoidanceThread = Avoidance(bebop)
-    # inputThread = Thread(target=userInput)
     threads = [arriveThread, arriveThread.gps, avoidanceThread]
     #----------------------------------------------------------
 
@@ -55,16 +54,13 @@ def test():
             
             while arriveThread.distance > 0.25:
                 if stop:
-                    print("Flying Stop\n")
                     arriveThread.pause()
                     avoidanceThread.resume()
-                    avoidanceThread.pause()
+                    # avoidanceThread.pause()
                 else:
                     # print("Flying Resume\n")
                     arriveThread.resume()
                     avoidanceThread.pause()
-            
-            print("While loop exited (main)\n")
 
             for thread in threads:
                 # if isinstance(thread, (Arrive, GPS, Avoidance)):
