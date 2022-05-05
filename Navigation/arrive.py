@@ -17,13 +17,13 @@ class Arrive(Thread):
         self.distance = 1000.0
     
     def run(self):
-        def checkMove(v):
-            for i in range(len(self.gps.coords)):
-                if self.gps.coords[i][0] == 500:
-                    print("GPS is bad")
-                    print("Going foward\n")
-                    self.bebop.fly_direct(roll=0, pitch=75, yaw=0, vertical_movement=0, duration=0.25)
-            self.bebop.move_relative(v, 0, 0, 0)
+        # def checkMove(v):
+        #     for i in range(len(self.gps.coords)):
+        #         if self.gps.coords[i][0] == 500:
+        #             print("GPS is bad")
+        #             print("Going foward\n")
+        #             self.bebop.fly_direct(roll=0, pitch=75, yaw=0, vertical_movement=0, duration=0.25)
+        #     self.bebop.move_relative(v, 0, 0, 0)
 
         p = 100
         v = 2
@@ -34,8 +34,8 @@ class Arrive(Thread):
 
         try:
             #------------------------------------Fly the drone foward-----------------------------------------
-            print("Fly up 1m\n")
-            self.bebop.move_relative(0, 0, -1, 0)
+            print("Fly up 2m\n")
+            self.bebop.move_relative(0, 0, -2, 0)
             
             # bebop.smart_sleep(0.2)
 
@@ -78,34 +78,34 @@ class Arrive(Thread):
             # TODO
             # Fix lat and lon placement in the code
             # Adjust event lock
-            while self.distance > 0.25:
+            while self.distance > 0.4:
                 with self.condition:
                     if self.isPaused:
                         self.condition.wait()
-                # self.bebop.loop_breaker = False
+                
                 if self.distance > 10:
-                    p = 100
+                    # p = 100
                     v = 8
                 elif self.distance > 5:
-                    p = 75
+                    # p = 75
                     v = 4
                 elif self.distance <= 3 and self.distance > 1:
-                    p = 25
-                    v = 1.5
+                    # p = 25
+                    v = 2
                 elif self.distance < 1 and self.distance > 0.5:
-                    p = 10
-                    v = 0.75
+                    # p = 10
+                    v = 1
                 else:
-                    p = 5
-                    v = 0.3875
+                    # p = 5
+                    v = 0.5
                 
                 diff_radians = self.gps.diffRadians(lat, lon, prevLat, prevLon)
 
                 with self.condition:
                     if self.isPaused:
                         self.condition.wait()
-                # self.bebop.loop_breaker = False
-                if abs(diff_radians) > 5 * pi / 180:
+                
+                if abs(diff_radians) > 2 * pi / 180:
                     print("Rotating\n")
                     self.bebop.smart_sleep(0.1)
                     self.bebop.move_relative(0, 0, 0, -diff_radians)
@@ -114,7 +114,7 @@ class Arrive(Thread):
                 with self.condition:
                     if self.isPaused:
                         self.condition.wait()
-                # self.bebop.loop_breaker = False
+                
                 print("Going forward\n")
                 #bebop.fly_direct(roll=0, pitch=p, yaw=0, vertical_movement=0, duration=0.5)
                 self.bebop.move_relative(v, 0, 0, 0)

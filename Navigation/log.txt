@@ -1,0 +1,96 @@
+
+
+04/05/2022
+11:04:05
+
+Connecting to the drone
+
+Setting up mDNS listener since this is not a Mambo
+Making a browser for _arsdk-090c._udp.local.
+[38;5;196m connection failed: did you remember to connect your machine to the Drone's wifi network? [0m
+Connection failed
+
+
+
+04/05/2022
+11:04:19
+
+Connecting to the drone
+
+Setting up mDNS listener since this is not a Mambo
+Making a browser for _arsdk-090c._udp.local.
+[38;5;196m connection failed: did you remember to connect your machine to the Drone's wifi network? [0m
+Connection failed
+
+
+
+04/05/2022
+11:04:51
+
+Connecting to the drone
+
+Setting up mDNS listener since this is not a Mambo
+Making a browser for _arsdk-090c._udp.local.
+[38;5;196m connection failed: did you remember to connect your machine to the Drone's wifi network? [0m
+Connection failed
+
+
+
+04/05/2022
+11:10:06
+
+Connecting to the drone
+
+Setting up mDNS listener since this is not a Mambo
+Making a browser for _arsdk-090c._udp.local.
+[38;5;196m connection failed: did you remember to connect your machine to the Drone's wifi network? [0m
+Connection failed
+
+
+
+04/05/2022
+11:39:30
+
+Connecting to the drone
+
+Setting up mDNS listener since this is not a Mambo
+Making a browser for _arsdk-090c._udp.local.
+Service Bebop2-017421._arsdk-090c._udp.local. added, service info: ServiceInfo(type='_arsdk-090c._udp.local.', name='Bebop2-017421._arsdk-090c._udp.local.', address=b'\xc0\xa8*\x01', port=44444, weight=0, priority=0, server='Bebop2-017421.local.', properties={b'{"device_id":"PI040384AA5K017421"}': False})
+Traceback (most recent call last):
+  File "c:/Users/trana/Desktop/Delivery-Drone/Navigation/build_test.py", line 109, in <module>
+    connect()
+  File "c:/Users/trana/Desktop/Delivery-Drone/Navigation/build_test.py", line 90, in connect
+    success = bebop.connect(5)
+  File "C:\Users\trana\AppData\Local\Programs\Python\Python38\lib\site-packages\pyparrot\Bebop.py", line 227, in connect
+    connected = self.drone_connection.connect(num_retries)
+  File "C:\Users\trana\AppData\Local\Programs\Python\Python38\lib\site-packages\pyparrot\networking\wifiConnection.py", line 167, in connect
+    handshake = self._handshake(num_retries)
+  File "C:\Users\trana\AppData\Local\Programs\Python\Python38\lib\site-packages\pyparrot\networking\wifiConnection.py", line 315, in _handshake
+    tcp_sock.connect((self.drone_ip, self.connection_info.port))
+ConnectionRefusedError: [WinError 10061] No connection could be made because the target machine actively refused it
+
+
+04/05/2022
+15:54:51
+
+Connecting to the drone
+
+Setting up mDNS listener since this is not a Mambo
+Making a browser for _arsdk-090c._udp.local.
+Service Bebop2-017421._arsdk-090c._udp.local. added, service info: ServiceInfo(type='_arsdk-090c._udp.local.', name='Bebop2-017421._arsdk-090c._udp.local.', address=b'\xc0\xa8*\x01', port=44444, weight=0, priority=0, server='Bebop2-017421.local.', properties={b'{"device_id":"PI040384AA5K017421"}': False})
+{"d2c_port": 43210, "controller_type": "computer", "controller_name": "pyparrot", "arstream2_client_stream_port": 55004, "arstream2_client_control_port": 55005}
+[38;5;196m Error: TCP handshake failed. [0m
+Connection failed
+
+
+
+04/05/2022
+15:56:55
+
+Connecting to the drone
+
+Setting up mDNS listener since this is not a Mambo
+Making a browser for _arsdk-090c._udp.local.
+[38;5;196m connection failed: did you remember to connect your machine to the Drone's wifi network? [0m
+Connection failed
+

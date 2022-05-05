@@ -17,7 +17,7 @@ class NavigationSensor(Thread):
             self.bebop = bebop
         self.isTerminated = False
         self.sensors = [400.0 for i in range(4)]
-        self.distanceThreshold = 60
+        self.distanceThreshold = 350
         self.isAvoidanceTriggered = False
 
     def getAvoidanceCase(self):
@@ -62,6 +62,7 @@ class NavigationSensor(Thread):
 
                         if data:
                             self.sensors = list(map(int, data.split(',')))
+                            self.sensors[0],self.sensors[1] = self.sensors[1],self.sensors[0]
                             print(self.sensors)
                         # print(uart_service.readline().decode("utf-8").rstrip())
                         

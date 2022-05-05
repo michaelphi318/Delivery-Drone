@@ -24,9 +24,8 @@ class DroneController():
         Thread object
         this thread will control how the drone fly to the desination
         has GPS thread as one of its attribute
-    avoidanceThread : Avoidance(Thread)
-        Thread object
-        this thread will control how the drone avoid object
+    avoidance : Avoidance()
+        this object will control how the drone avoid object
         has NavigationSensor thread as one of its attribute
     threads : []
         a list to hold all of the threads (Arrive, GPS, Avoidance and NavigationSensor)
@@ -53,8 +52,6 @@ class DroneController():
                 fly normaly using arriveThread
             Obstacle ->
                 pause arriveThread
-                resume avoidanceThread to stop the drone mid-fly
-                pause the avoidanceThread to allow the drone to move again
                 depends on the current case in the dictionary cases, move the drone based on its value
                 no more obstacle -> arriveThread will resume again
     --------------------------------------------------------------------------------------------------
@@ -75,9 +72,8 @@ class DroneController():
             Thread object
             this thread will control how the drone fly to the desination
             has GPS thread as one of its attribute
-        avoidanceThread : Avoidance(Thread)
-            Thread object
-            this thread will control how the drone avoid object
+        avoidance : Avoidance()
+            this object will control how the drone avoid object
             has NavigationSensor thread as one of its attribute
         threads : []
             a list to hold all of the threads (Arrive, GPS, Avoidance and NavigationSensor)
@@ -90,16 +86,16 @@ class DroneController():
         self.lat, self.lon = self.readGPSFromFile()
         self.bebop = Bebop()
         self.arriveThread = Arrive(self.bebop, self.lat, self.lon)
-        self.avoidanceThread = Avoidance(self.bebop)
-        self.threads = [self.arriveThread, self.arriveThread.gps, self.avoidanceThread, self.avoidanceThread.navi]
-        self.cases = {"000" : [self.avoidanceThread.moveDown], 
-                        "001" : [self.avoidanceThread.turnRight, self.avoidanceThread.moveForward],
-                        "010" : [self.avoidanceThread.turnLeft, self.avoidanceThread.moveForward],
-                        "011" : [self.avoidanceThread.turnLeft, self.avoidanceThread.moveForward],
-                        "100" : [self.avoidanceThread.turnRight, self.avoidanceThread.moveForward],
-                        "101" : [self.avoidanceThread.turnRight, self.avoidanceThread.moveForward],
-                        "110" : [self.avoidanceThread.turnLeft, self.avoidanceThread.moveForward],
-                        "111" : [self.avoidanceThread.turnRight, self.avoidanceThread.moveForward]}
+        self.avoidance = Avoidance(self.bebop)
+        self.threads = [self.arriveThread, self.arriveThread.gps, self.avoidance.navi]
+        self.cases = {"000" : [self.avoidance.moveDown], 
+                        "001" : [self.avoidance.turnRight, self.avoidance.moveForward],
+                        "010" : [self.avoidance.turnLeft, self.avoidance.moveForward],
+                        "011" : [self.avoidance.turnLeft, self.avoidance.moveForward],
+                        "100" : [self.avoidance.turnRight, self.avoidance.moveForward],
+                        "101" : [self.avoidance.turnRight, self.avoidance.moveForward],
+                        "110" : [self.avoidance.turnLeft, self.avoidance.moveForward],
+                        "111" : [self.avoidance.turnRight, self.avoidance.moveForward]}
 
     def readGPSFromFile(self):
         '''read the GPS data from gps.txt, then assign the attribute lat and lon'''
@@ -150,8 +146,6 @@ class DroneController():
             fly normaly using arriveThread
         Obstacle ->
             pause arriveThread
-            resume avoidanceThread to stop the drone mid-fly
-            pause the avoidanceThread to allow the drone to move again
             depends on the current case in the dictionary cases, move the drone based on its value
             no more obstacle -> arriveThread will resume again
         ----------------------------------------------------------------------------------------------
@@ -185,39 +179,57 @@ class DroneController():
                     thread.start()
 
                 # Loop til distance is reached
-                while self.arriveThread.distance > 0.25:
-                    # object detected
-                    if self.avoidanceThread.navi.isAvoidanceTriggered or self.avoidanceThread.navi.sensors[3] < self.avoidanceThread.navi.distanceThreshold:
-                        case = self.avoidanceThread.navi.getAvoidanceCase()
-
-                        print("Flying stop\n")
-                        self.arriveThread.pause()
-                        self.avoidanceThread.resume()
-
-                        # For upper sensor
-                        if self.avoidanceThread.navi.sensors[3] < self.avoidanceThread.navi.distanceThreshold:
-                            self.avoidanceThread.pause()
-                            self.avoidanceThread.moveUp()
-
-                        # case in dictionary
-                        elif case in self.cases.keys():
-                            self.avoidanceThread.pause()
-
-                            for command in self.cases.get(case):
-                                command()
-                        
-                        # case not in dictionary, which should not happen
-                        else:
-                            raise ValueError("Avoidance case not in dict\n")
-                    
-                    # object not detected
-                    else:
-                        self.arriveThread.resume()
-                        self.avoidanceThread.pause()
+                while self.arriveThread.distance  > 0.25:
                 
+                    # if object detected
+                    if self.avoidance.navi.sensors[3] < self.avoidance.navi.distanceThreshold or self.avoidance.navi.isAvoidanceTriggered:
+                        # time.sleep(5)
+                        # print(avoidanceThread.navi.sensors)
+                        case = self.avoidance.navi.getAvoidanceCase()
+                    # print("Case %s" % case)
+                        if self.avoidance.navi.sensors[3] < self.avoidance.navi.distanceThreshold and self.avoidance.navi.isAvoidanceTriggered:
+                            if case in self.cases.keys():
+                                for command in self.cases.get(case):
+                                    command()
+                            else:
+                                raise ValueError("Avoidance case not in dictionary\n")
+                        elif self.avoidance.navi.sensors[3] < self.avoidance.navi.distanceThreshold and not self.avoidance.navi.isAvoidanceTriggered:
+                            self.avoidance.moveDown()
+                        elif self.avoidance.navi.sensors[3] > self.avoidance.navi.distanceThreshold and self.avoidance.navi.isAvoidanceTriggered:
+                            self.avoidance.moveUp()
+
+                # # Loop til distance is reached
+                # while self.arriveThread.distance > 0.25:
+                #     # object detected
+                #     if self.avoidance.navi.isAvoidanceTriggered or self.avoidance.navi.sensors[3] < self.avoidance.navi.distanceThreshold:
+                #         case = self.avoidance.navi.getAvoidanceCase()
+
+                #         print("Flying stop\n")
+                #         self.arriveThread.pause()
+                #         self.bebop.loop_breaker = True
+                #         time.sleep(0.1)
+                #         self.bebop.loop_breaker = False
+
+                #         # For upper sensor
+                #         if self.avoidance.navi.sensors[3] < self.avoidance.navi.distanceThreshold:
+                #             self.avoidance.moveUp()
+
+                #         # case in dictionary
+                #         elif case in self.cases.keys():
+                #             for command in self.cases.get(case):
+                #                 command()
+                        
+                #         # case not in dictionary, which should not happen
+                #         else:
+                #             raise ValueError("Avoidance case not in dict\n")
+                    
+                #     # object not detected
+                #     else:
+                #         self.arriveThread.resume()
+            
                 # join all the threads
                 for thread in self.threads:
-                    # if isinstance(thread, (Arrive, GPS, Avoidance, NavigationSensor)):
+                    # if isinstance(thread, (Arrive, GPS, NavigationSensor)):
                     thread.isTerminated = True
                     thread.join()
                     print("Thread %s terminated" % (thread.__class__.__name__))

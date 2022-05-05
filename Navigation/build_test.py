@@ -42,28 +42,28 @@ def test():
     #---------------------Declare------------------------------
     lat, lon = readGPSFromFile()
     arriveThread = Arrive(bebop, lat, lon)
-    avoidanceThread = Avoidance(bebop)
-    threads = [arriveThread, arriveThread.gps, avoidanceThread]
+    # avoidance = Avoidance(bebop)
+    threads = [arriveThread, arriveThread.gps]
     #----------------------------------------------------------
 
     try:
         with Listener(on_press=on_press, on_release=on_release) as listener:
             for thread in threads:
-                # if isinstance(thread, (Arrive, GPS, Avoidance)):
+                # if isinstance(thread, (Arrive, GPS)):
                 thread.start()
             
             while arriveThread.distance > 0.25:
                 if stop:
                     arriveThread.pause()
-                    avoidanceThread.resume()
-                    # avoidanceThread.pause()
+                    bebop.loop_breaker = True
+                    time.sleep(0.1)
+                    bebop.loop_breaker = False
                 else:
-                    # print("Flying Resume\n")
                     arriveThread.resume()
-                    avoidanceThread.pause()
+                    # bebop.loop_breaker = False
 
             for thread in threads:
-                # if isinstance(thread, (Arrive, GPS, Avoidance)):
+                # if isinstance(thread, (Arrive, GPS)):
                 thread.isTerminated = True
                 thread.join()
                 print("Thread %s terminated\n" % (thread.__class__.__name__))

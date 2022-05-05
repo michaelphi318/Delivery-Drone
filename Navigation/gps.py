@@ -92,7 +92,7 @@ class GPS(Thread):
             os._exit(1)
 
 if __name__ == "__main__":
-    gps = GPS()
+    gps = GPS(Bebop(), 0, 0)
     gps.start()
     gps.isTerminated = True
     gps.join()
