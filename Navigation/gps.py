@@ -82,7 +82,7 @@ class GPS(Thread):
                     self.coords.append([lat, lon, alt])
                     self.coords.pop(0)
             
-            print("\nGPS thread done")
+            # print("\nGPS thread done")
         except:
             print("\nError in GPS class\n")
             traceback.print_exc()
@@ -90,6 +90,7 @@ class GPS(Thread):
             self.bebop.safe_land(5)
             self.bebop.disconnect()
             os._exit(1)
+
 
 if __name__ == "__main__":
     gps = GPS(Bebop(), 0, 0)

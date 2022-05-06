@@ -43,7 +43,7 @@ def test():
     lat, lon = readGPSFromFile()
     arriveThread = Arrive(bebop, lat, lon)
     # avoidance = Avoidance(bebop)
-    threads = [arriveThread, arriveThread.gps]
+    threads = [arriveThread.gps, arriveThread]
     #----------------------------------------------------------
 
     try:
@@ -51,13 +51,14 @@ def test():
             for thread in threads:
                 # if isinstance(thread, (Arrive, GPS)):
                 thread.start()
+                # time.sleep(0.5)
             
             while arriveThread.distance > 0.25:
                 if stop:
                     arriveThread.pause()
-                    bebop.loop_breaker = True
-                    time.sleep(0.1)
-                    bebop.loop_breaker = False
+                    # bebop.loop_breaker = True
+                    # bebop.loop_breaker = False
+                    bebop.sensors.RelativeMoveEnded = True
                 else:
                     arriveThread.resume()
                     # bebop.loop_breaker = False

@@ -25,10 +25,10 @@ class Arrive(Thread):
         #             self.bebop.fly_direct(roll=0, pitch=75, yaw=0, vertical_movement=0, duration=0.25)
         #     self.bebop.move_relative(v, 0, 0, 0)
 
-        p = 100
+        # p = 100
         v = 2
-        lat = 0
-        lon = 0
+        # lat = 0
+        # lon = 0
 
         self.resume()
 
@@ -59,8 +59,8 @@ class Arrive(Thread):
             # checkMove(2)
             # bebop.smart_sleep(1)
             
-            while(self.gps.avgGPS() == lat):
-                continue
+            # while(self.gps.avgGPS() == lat):
+            #     continue
 
             # lat = (self.gps.coords[0][0] + self.gps.coords[1][0] + self.gps.coords[2][0]) / 3
             # lon = (self.gps.coords[0][1] + self.gps.coords[1][1] + self.gps.coords[2][1]) / 3
@@ -79,6 +79,8 @@ class Arrive(Thread):
             # Fix lat and lon placement in the code
             # Adjust event lock
             while self.distance > 0.4:
+                timeout = 0
+
                 with self.condition:
                     if self.isPaused:
                         self.condition.wait()
@@ -86,34 +88,41 @@ class Arrive(Thread):
                 if self.distance > 10:
                     # p = 100
                     v = 8
+                    timeout = 5
                 elif self.distance > 5:
                     # p = 75
                     v = 4
+                    timeout = 4
                 elif self.distance <= 3 and self.distance > 1:
                     # p = 25
                     v = 2
+                    timeout = 3
                 elif self.distance < 1 and self.distance > 0.5:
                     # p = 10
-                    v = 1
+                    v = 0.75
+                    timeout = 2
                 else:
                     # p = 5
-                    v = 0.5
+                    v = 0.3875
+                    timeout = 2
                 
                 diff_radians = self.gps.diffRadians(lat, lon, prevLat, prevLon)
 
                 with self.condition:
                     if self.isPaused:
-                        self.condition.wait()
+                        # self.condition.wait()
+                        continue
                 
-                if abs(diff_radians) > 2 * pi / 180:
+                if abs(diff_radians) > 5 * pi / 180:
                     print("Rotating\n")
-                    self.bebop.smart_sleep(0.1)
-                    self.bebop.move_relative(0, 0, 0, -diff_radians)
+                    # self.bebop.smart_sleep(0.1)
+                    self.bebop.move_relative(0, 0, 0, -diff_radians, timeout)
                     # checkMove()
                 
                 with self.condition:
                     if self.isPaused:
-                        self.condition.wait()
+                        # self.condition.wait()
+                        continue
                 
                 print("Going forward\n")
                 #bebop.fly_direct(roll=0, pitch=p, yaw=0, vertical_movement=0, duration=0.5)
@@ -139,7 +148,7 @@ class Arrive(Thread):
             print("Land the drone\n")
             self.bebop.safe_land(5)
             self.bebop.disconnect()
-            print("Arrive thread done\n")
+            # print("Arrive thread done\n")
             #----------------------------------------------------------
         except:
             print("Error in Arrive class\n")

@@ -19,6 +19,7 @@ class NavigationSensor(Thread):
         self.sensors = [400.0 for i in range(4)]
         self.distanceThreshold = 350
         self.isAvoidanceTriggered = False
+        self.isConnected = False
 
     def getAvoidanceCase(self):
         res = ""
