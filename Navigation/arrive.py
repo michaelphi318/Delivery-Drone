@@ -35,7 +35,7 @@ class Arrive(Thread):
         try:
             #------------------------------------Fly the drone foward-----------------------------------------
             print("Fly up 2m\n")
-            self.bebop.move_relative(0, 0, -2, 0)
+            self.bebop.move_relative(0, 0, -2, 0, 10)
             
             # bebop.smart_sleep(0.2)
 
@@ -55,7 +55,7 @@ class Arrive(Thread):
             prevLon = lon
             
             print("Going forward to check for angle\n")
-            self.bebop.move_relative(2, 0, 0, 0)
+            self.bebop.move_relative(2, 0, 0, 0, 10)
             # checkMove(2)
             # bebop.smart_sleep(1)
             
@@ -88,23 +88,23 @@ class Arrive(Thread):
                 if self.distance > 10:
                     # p = 100
                     v = 8
-                    timeout = 5
+                    timeout = 10
                 elif self.distance > 5:
                     # p = 75
                     v = 4
-                    timeout = 4
+                    timeout = 10
                 elif self.distance <= 3 and self.distance > 1:
                     # p = 25
                     v = 2
-                    timeout = 3
+                    timeout = 10
                 elif self.distance < 1 and self.distance > 0.5:
                     # p = 10
                     v = 0.75
-                    timeout = 2
+                    timeout = 10
                 else:
                     # p = 5
                     v = 0.3875
-                    timeout = 2
+                    timeout = 10
                 
                 diff_radians = self.gps.diffRadians(lat, lon, prevLat, prevLon)
 
@@ -116,7 +116,7 @@ class Arrive(Thread):
                 if abs(diff_radians) > 5 * pi / 180:
                     print("Rotating\n")
                     # self.bebop.smart_sleep(0.1)
-                    self.bebop.move_relative(0, 0, 0, -diff_radians, timeout)
+                    self.bebop.move_relative(0, 0, 0, -diff_radians, 10)
                     # checkMove()
                 
                 with self.condition:
@@ -126,7 +126,7 @@ class Arrive(Thread):
                 
                 print("Going forward\n")
                 #bebop.fly_direct(roll=0, pitch=p, yaw=0, vertical_movement=0, duration=0.5)
-                self.bebop.move_relative(v, 0, 0, 0)
+                self.bebop.move_relative(v, 0, 0, 0, timeout)
                 # checkMove(v)
                 # bebop.smart_sleep(0.5)
                 

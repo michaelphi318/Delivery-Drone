@@ -51,6 +51,7 @@ class NavigationSensor(Thread):
                         if UARTService in adv.services:
                             uart_connection = ble.connect(adv)
                             print("Connected")
+                            self.isConnected = True
                             break
                 
                     ble.stop_scan()

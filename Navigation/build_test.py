@@ -58,7 +58,7 @@ def test():
                     arriveThread.pause()
                     # bebop.loop_breaker = True
                     # bebop.loop_breaker = False
-                    bebop.sensors.RelativeMoveEnded = True
+                    # bebop.sensors.RelativeMoveEnded = True
                 else:
                     arriveThread.resume()
                     # bebop.loop_breaker = False

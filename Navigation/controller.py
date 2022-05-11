@@ -178,9 +178,9 @@ class DroneController():
                     thread.start()
 
                     # wait for sensors to be connected
-                    if isinstance(thread, NavigationSensor):
-                        while not thread.isConnected:
-                            continue
+                    # if isinstance(thread, NavigationSensor):
+                    #     while not thread.isConnected:
+                    #         continue
 
                 # Loop til distance is reached
                 while self.arriveThread.distance  > 0.25:
@@ -190,9 +190,9 @@ class DroneController():
                         # time.sleep(5)
                         # print(avoidanceThread.navi.sensors)
                         self.arriveThread.pause()
-                        # self.bebop.loop_breaker = True
-                        # self.bebop.loop_breaker = False
-                        self.bebop.sensors.RelativeMoveEnded = True
+                        self.bebop.loop_breaker = True
+                        self.bebop.loop_breaker = False
+                        # self.bebop.sensors.RelativeMoveEnded = True
                         case = self.avoidance.navi.getAvoidanceCase()
                         # print("Case %s" % case)
                         
