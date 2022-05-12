@@ -17,9 +17,10 @@ class NavigationSensor(Thread):
             self.bebop = bebop
         self.isTerminated = False
         self.sensors = [400.0 for i in range(4)]
-        self.distanceThreshold = 350
+        self.distanceThreshold = 100
         self.isAvoidanceTriggered = False
         self.isConnected = False
+        self.isPackageDelivered = False
 
     def getAvoidanceCase(self):
         res = ""
@@ -37,6 +38,21 @@ class NavigationSensor(Thread):
         # shallow copy is also fine
         temp = copy.deepcopy(self.sensors[:3])
         self.isAvoidanceTriggered = any(i < self.distanceThreshold for i in temp)
+
+    def drop(self):
+        uart_connection = None
+
+        if uart_connection and uart_connection.connected:
+            uart_service = uart_connection[UARTService]
+            
+            stop = "stop"
+            uart_service.write(stop.encode("utf-8"))
+            self.isPackageDelivered = True
+            
+            while self.isPackageDelivered:
+                if uart_service.readline().decode("utf-8").rstrip():
+                    self.isPackageDelivered = False
+                    # print(uart_service.readline().decode("utf-8").rstrip())
 
     def run(self):
         try:
@@ -64,7 +80,7 @@ class NavigationSensor(Thread):
 
                         if data:
                             self.sensors = list(map(int, data.split(',')))
-                            self.sensors[0],self.sensors[1] = self.sensors[1],self.sensors[0]
+                            # self.sensors[0],self.sensors[1] = self.sensors[1],self.sensors[0]
                             print(self.sensors)
                         # print(uart_service.readline().decode("utf-8").rstrip())
                         

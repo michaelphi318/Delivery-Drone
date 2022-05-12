@@ -86,16 +86,16 @@ class DroneController():
         self.lat, self.lon = self.readGPSFromFile()
         self.bebop = Bebop()
         self.arriveThread = Arrive(self.bebop, self.lat, self.lon)
-        self.avoidance = Avoidance(self.bebop)
-        self.threads = [self.avoidance.navi, self.arriveThread.gps, self.arriveThread]
-        self.cases = {"000" : [self.avoidance.moveDown], 
-                        "001" : [self.avoidance.turnRight, self.avoidance.moveForward],
-                        "010" : [self.avoidance.turnLeft, self.avoidance.moveForward],
-                        "011" : [self.avoidance.turnLeft, self.avoidance.moveForward],
-                        "100" : [self.avoidance.turnRight, self.avoidance.moveForward],
-                        "101" : [self.avoidance.turnRight, self.avoidance.moveForward],
-                        "110" : [self.avoidance.turnLeft, self.avoidance.moveForward],
-                        "111" : [self.avoidance.turnRight, self.avoidance.moveForward]}
+        # self.avoidance = Avoidance(self.bebop)
+        self.threads = [self.arriveThread.gps, self.arriveThread]
+        # self.cases = {"000" : [self.avoidance.moveDown], 
+        #                 "001" : [self.avoidance.turnRight, self.avoidance.moveForward],
+        #                 "010" : [self.avoidance.turnLeft, self.avoidance.moveForward],
+        #                 "011" : [self.avoidance.turnLeft, self.avoidance.moveForward],
+        #                 "100" : [self.avoidance.turnRight, self.avoidance.moveForward],
+        #                 "101" : [self.avoidance.turnRight, self.avoidance.moveForward],
+        #                 "110" : [self.avoidance.turnLeft, self.avoidance.moveForward],
+        #                 "111" : [self.avoidance.turnRight, self.avoidance.moveForward]}
 
     def readGPSFromFile(self):
         '''read the GPS data from gps.txt, then assign the attribute lat and lon'''
@@ -182,73 +182,45 @@ class DroneController():
                     #     while not thread.isConnected:
                     #         continue
 
-                # Loop til distance is reached
-                while self.arriveThread.distance  > 0.25:
-                
-                    # if object detected
-                    if self.avoidance.navi.sensors[3] < self.avoidance.navi.distanceThreshold or self.avoidance.navi.isAvoidanceTriggered:
-                        # time.sleep(5)
-                        # print(avoidanceThread.navi.sensors)
-                        self.arriveThread.pause()
-                        self.bebop.loop_breaker = True
-                        self.bebop.loop_breaker = False
-                        # self.bebop.sensors.RelativeMoveEnded = True
-                        case = self.avoidance.navi.getAvoidanceCase()
-                        # print("Case %s" % case)
-                        
-                        # if upper sensor and either front, left, right sees something
-                        if self.avoidance.navi.sensors[3] < self.avoidance.navi.distanceThreshold and self.avoidance.navi.isAvoidanceTriggered:
-                            if case in self.cases.keys():
-                                for command in self.cases.get(case):
-                                    command()
-                            else:
-                                raise ValueError("Avoidance case not in dictionary\n")
-                        
-                        # if only uppper sensor see something
-                        elif self.avoidance.navi.sensors[3] < self.avoidance.navi.distanceThreshold and not self.avoidance.navi.isAvoidanceTriggered:
-                            self.avoidance.moveDown()
-                        
-                        # if upper sensor doesn't see anything and either front, left, right see anything
-                        elif self.avoidance.navi.sensors[3] > self.avoidance.navi.distanceThreshold and self.avoidance.navi.isAvoidanceTriggered:
-                            self.avoidance.moveUp()
-                    
-                    # object not detected
-                    else:
-                        self.arriveThread.resume()
-                        # self.bebop.loop_breaker = False
-
                 # # Loop til distance is reached
-                # while self.arriveThread.distance > 0.25:
-                #     # object detected
-                #     if self.avoidance.navi.isAvoidanceTriggered or self.avoidance.navi.sensors[3] < self.avoidance.navi.distanceThreshold:
-                #         case = self.avoidance.navi.getAvoidanceCase()
-
-                #         print("Flying stop\n")
+                # while self.arriveThread.distance  > 0.25:
+                #     # continue
+                #     # if object detected
+                #     if self.avoidance.navi.sensors[3] < self.avoidance.navi.distanceThreshold or self.avoidance.navi.isAvoidanceTriggered:
+                #         # time.sleep(5)
+                #         # print(avoidanceThread.navi.sensors)
+                #         print("Object detected\n")
                 #         self.arriveThread.pause()
-                #         self.bebop.loop_breaker = True
-                #         time.sleep(0.1)
-                #         self.bebop.loop_breaker = False
-
-                #         # For upper sensor
-                #         if self.avoidance.navi.sensors[3] < self.avoidance.navi.distanceThreshold:
-                #             self.avoidance.moveUp()
-
-                #         # case in dictionary
-                #         elif case in self.cases.keys():
-                #             for command in self.cases.get(case):
-                #                 command()
+                #         # self.bebop.loop_breaker = True
+                #         # self.bebop.loop_breaker = False
+                #         # self.bebop.sensors.RelativeMoveEnded = True
+                #         self.bebop.move_relative(-1, 0, 0, 0)
+                #         case = self.avoidance.navi.getAvoidanceCase()
+                #         # print("Case %s" % case)
                         
-                #         # case not in dictionary, which should not happen
-                #         else:
-                #             raise ValueError("Avoidance case not in dict\n")
+                #         # if upper sensor and either front, left, right sees something
+                #         if self.avoidance.navi.sensors[3] < self.avoidance.navi.distanceThreshold and self.avoidance.navi.isAvoidanceTriggered:
+                #             if case in self.cases.keys():
+                #                 for command in self.cases.get(case):
+                #                     command()
+                #             else:
+                #                 raise ValueError("Avoidance case not in dictionary\n")
+                        
+                #         # if only uppper sensor see something
+                #         elif self.avoidance.navi.sensors[3] < self.avoidance.navi.distanceThreshold and not self.avoidance.navi.isAvoidanceTriggered:
+                #             self.avoidance.moveDown()
+                        
+                #         # if upper sensor doesn't see anything and either front, left, right see anything
+                #         elif self.avoidance.navi.sensors[3] > self.avoidance.navi.distanceThreshold and self.avoidance.navi.isAvoidanceTriggered:
+                #             self.avoidance.moveUp()
                     
                 #     # object not detected
                 #     else:
                 #         self.arriveThread.resume()
+                #         # self.bebop.loop_breaker = False
             
                 # join all the threads
                 for thread in self.threads:
-                    # if isinstance(thread, (Arrive, GPS, NavigationSensor)):
                     thread.isTerminated = True
                     thread.join()
                     print("Thread %s terminated" % (thread.__class__.__name__))

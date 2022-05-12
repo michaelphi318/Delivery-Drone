@@ -24,10 +24,10 @@ def on_release(key):
         print("Emergeny landing protocol - disconnecting")
         bebop.disconnect()
         os._exit(1)
-    elif key == KeyCode.from_char("p"):
-        stop = True
-    elif key == KeyCode.from_char("r"):
-        stop = False
+    # elif key == KeyCode.from_char("p"):
+    #     stop = True
+    # elif key == KeyCode.from_char("r"):
+    #     stop = False
 
 def readGPSFromFile():
     data = []
@@ -51,7 +51,11 @@ def test():
             for thread in threads:
                 # if isinstance(thread, (Arrive, GPS)):
                 thread.start()
-                # time.sleep(0.5)
+
+                # wait for sensors to be connected
+                # if isinstance(thread, NavigationSensor):
+                #     while not thread.isConnected:
+                #         continue
             
             while arriveThread.distance > 0.25:
                 if stop:
@@ -70,7 +74,7 @@ def test():
                 print("Thread %s terminated\n" % (thread.__class__.__name__))
 
             listener.join()
-            sys.exit(0)
+            # sys.exit(0)
     except:
         print("Error in Main thread\n")
         traceback.print_exc()
@@ -100,6 +104,7 @@ def connect():
 
 if __name__ == "__main__":
     bebop = Bebop()
+    circuit = NavigationSensor(bebop)
     stop = False    # test boolean
     path = os.path.dirname(os.path.realpath(__file__)) + "/log.txt"
     sys.stdout = Logger(path)
@@ -110,3 +115,4 @@ if __name__ == "__main__":
     connect()
     bebop.safe_takeoff(10)
     test()
+    circuit.drop()

@@ -1,3 +1,4 @@
+from tracemalloc import start
 from pyparrot.Bebop import Bebop
 from threading import Thread, Condition
 from math import atan, pi
@@ -35,7 +36,7 @@ class Arrive(Thread):
         try:
             #------------------------------------Fly the drone foward-----------------------------------------
             print("Fly up 2m\n")
-            self.bebop.move_relative(0, 0, -2, 0, 10)
+            self.bebop.move_relative(0, 0, -2, 0)
             
             # bebop.smart_sleep(0.2)
 
@@ -55,7 +56,7 @@ class Arrive(Thread):
             prevLon = lon
             
             print("Going forward to check for angle\n")
-            self.bebop.move_relative(2, 0, 0, 0, 10)
+            self.bebop.move_relative(2, 0, 0, 0)
             # checkMove(2)
             # bebop.smart_sleep(1)
             
@@ -113,10 +114,11 @@ class Arrive(Thread):
                         # self.condition.wait()
                         continue
                 
-                if abs(diff_radians) > 5 * pi / 180:
+                if abs(diff_radians) > 10 * pi / 180:
                     print("Rotating\n")
                     # self.bebop.smart_sleep(0.1)
-                    self.bebop.move_relative(0, 0, 0, -diff_radians, 10)
+                    start_time = time.time()
+                    self.bebop.move_relative(0, 0, 0, -diff_radians)
                     # checkMove()
                 
                 with self.condition:
@@ -126,7 +128,8 @@ class Arrive(Thread):
                 
                 print("Going forward\n")
                 #bebop.fly_direct(roll=0, pitch=p, yaw=0, vertical_movement=0, duration=0.5)
-                self.bebop.move_relative(v, 0, 0, 0, timeout)
+                start_time = time.time()
+                self.bebop.move_relative(v, 0, 0, 0)
                 # checkMove(v)
                 # bebop.smart_sleep(0.5)
                 
