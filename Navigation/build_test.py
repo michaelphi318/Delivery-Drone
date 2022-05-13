@@ -113,6 +113,11 @@ if __name__ == "__main__":
     print(datetime.datetime.now().strftime("%H:%M:%S"))
 
     connect()
+    circuit.start()
+    
+    while not circuit.isConnected:
+        continue
+    
     bebop.safe_takeoff(10)
     test()
     circuit.drop()

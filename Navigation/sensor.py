@@ -44,7 +44,7 @@ class NavigationSensor(Thread):
 
         if uart_connection and uart_connection.connected:
             uart_service = uart_connection[UARTService]
-            
+
             stop = "stop"
             uart_service.write(stop.encode("utf-8"))
             self.isPackageDelivered = True
@@ -81,7 +81,7 @@ class NavigationSensor(Thread):
                         if data:
                             self.sensors = list(map(int, data.split(',')))
                             # self.sensors[0],self.sensors[1] = self.sensors[1],self.sensors[0]
-                            print(self.sensors)
+                            # print(self.sensors)
                         # print(uart_service.readline().decode("utf-8").rstrip())
                         
                         self.setAvoidanceTrigger()
